@@ -6,14 +6,15 @@ const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
 
 const App = () => {
-  const [test, setTest] = useState('test');
+  //const [test, setTest] = useState('test');
   const [text, setText] = useState('text');
+  const [messages, setMessages] = useState([]);
       
   useEffect(() => {
     socket.on('send_message', function(msg) {
       console.log('receiving msg: ' + msg)
     });
-  }, [text]);
+  }, [messages]);
 
   // socket.on('connect', function(data) {
   //   //console.log(socket.client.id);
@@ -26,24 +27,25 @@ const App = () => {
 
   const handleChange = (e) => {
     let change = e.target.value
-    setTest(change);
+    setText(change);
     //console.log(change)
   } 
 
   const sendMessage = (msg) => {
-    //console.log(socket);
     console.log('send');
-    setText(msg)
+    //setText(msg);
+    const newMessage = <li className="message">{msg}</li>;
+    setMessages([...messages, newMessage]);
     socket.emit('send_message', msg);
-    setTest('');
+    setText('');
   }
 
   return (
     <div className="App">
-      <ul id="messages"></ul>
+      <ul id="messages">{messages}</ul>
       <form action="" onSubmit={(e) => e.preventDefault()}>
-      <input id="m" autoComplete="off" value={test} onChange={(e) => handleChange(e)} />
-      <button onClick={()=>sendMessage(test)}>Send</button>
+      <input id="m" autoComplete="off" value={text} onChange={(e) => handleChange(e)} />
+      <button onClick={()=>sendMessage(text)}>Send</button>
       </form>
     </div>
   );
