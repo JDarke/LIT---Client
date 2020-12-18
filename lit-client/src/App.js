@@ -36,9 +36,20 @@ const App = () => {
     setText(change);
   } 
 
+  const createMessage = (msg) => {
+    let d = new Date();
+    let time = d.toLocaleTimeString().slice(0, -3); 
+    return (
+      <>
+      <li className="message">{msg}</li>
+      <div className="timeStamp">{time}</div>
+      </>
+    )
+  }
+
   const sendMessage = (msg) => {
     if (msg) {
-      const newMessage = <li className="message">{msg}</li>;
+      const newMessage = createMessage(msg);
       setMessages([...messages, newMessage]);
       socket.emit('send_message', msg);
       setText('');

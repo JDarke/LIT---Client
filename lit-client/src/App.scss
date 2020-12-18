@@ -23,6 +23,10 @@
   background: #555;
 }
 
+:focus {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+
 .App {
   text-align: center;
   background: #dcdcdc;
@@ -126,6 +130,7 @@ ul {
 }
 
 .message {
+  position: relative;
   list-style: none;
   text-align: left;
   font-weight: bold;
@@ -152,6 +157,14 @@ ul {
   -moz-border-radius: 25px 25px 25px 0;
   -ms-border-radius: 25px 25px 25px 0;
   -o-border-radius: 25px 25px 25px 0;
+}
+
+.timeStamp {
+  //position: absolute;
+  font-size: .7em;
+  opacity: .5;
+  align-self: flex-start;
+
 }
 
 .App-link {
