@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import './App.css';
+import './App.scss';
 
 const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
@@ -23,6 +23,8 @@ const App = () => {
   
   socket.on('reply', function(msg) {
     console.log('received: ' + msg)
+    const newMessage = <li className="message">{msg}</li>;
+    setMessages([...messages, newMessage]);
   });
 
   const handleChange = (e) => {
@@ -32,21 +34,30 @@ const App = () => {
   } 
 
   const sendMessage = (msg) => {
-    console.log('send');
-    //setText(msg);
-    const newMessage = <li className="message">{msg}</li>;
-    setMessages([...messages, newMessage]);
-    socket.emit('send_message', msg);
-    setText('');
+    if (msg) {
+      console.log('send');
+      //setText(msg);
+      const newMessage = <li className="message">{msg}</li>;
+      setMessages([...messages, newMessage]);
+
+      socket.emit('send_message', msg);
+      setText('');
+    }
+    
   }
 
   return (
     <div className="App">
-      <ul id="messages">{messages}</ul>
-      <form action="" onSubmit={(e) => e.preventDefault()}>
-      <input id="m" autoComplete="off" value={text} onChange={(e) => handleChange(e)} />
-      <button onClick={()=>sendMessage(text)}>Send</button>
-      </form>
+      <div className="wrapper">
+        <div className="statusBar">
+          <h2>Lost In Translation</h2>
+        </div>
+        <ul id="messages">{messages}</ul>
+        <form className="messageForm" action="" onSubmit={(e) => e.preventDefault()}>
+          <input id="m" autoComplete="off" value={text} onChange={(e) => handleChange(e)} />
+          <button onClick={()=>sendMessage(text)}>Send</button>
+        </form>
+      </div>
     </div>
   );
 }
