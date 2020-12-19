@@ -1,58 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react';
+//import { BrowserRouter as Router, Route } from 'react-router-dom';
 import io from 'socket.io-client';
 import './App.scss';
-
+import ChatWindow from './components/chatWindow/ChatWindow.comp';
+import StatusBar from './components/statusBar/StatusBar.comp';
+import SignIn from './components/signIn/SignIn.comp';
 const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
 
 
 const App = () => {
   //const [test, setTest] = useState('test');
-  const [text, setText] = useState('text');
+  const [typeText, setTypeText] = useState("text");
+  const [nameText, setNameText] = useState("text");
+  const [roomText, setRoomText] = useState("text");
+  const [name, setName] = useState("");
+  const [room, setRoom] = useState("");
+  const [view, setView] = useState("signin");
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   
-  
-  useEffect(() => {
-    socket.on('send_message', function(msg) {
-      console.log('receiving msg: ' + msg)
-    });
-    scrollToBottom();
-  }, [messages]);
 
-  // socket.on('connect', function(data) {
-  //   //console.log(socket.client.id);
-  //   //socket.emit('join', 'New user has joined');
-  // });
-  
-  socket.on('reply', function(msg) {
-    console.log('received: ' + msg)
-    const newMessage = <li className="message">{msg}</li>;
-    setMessages([...messages, newMessage]);
-  });
-
-  const handleChange = (e) => {
-    let change = e.target.value
-    setText(change);
-  } 
-
-  const createMessage = (msg) => {
-    let d = new Date();
-    let time = d.toLocaleTimeString().slice(0, -3); 
-    return (
-      <>
-      <li className="message">{msg}</li>
-      <div className="timeStamp">{time}</div>
-      </>
-    )
+  const login = (nameText, roomText) => {
+    socket.emit("join", { nameText, roomText });
+    setRoom(roomText);
+    setName(nameText);
+    setView('chat');
   }
 
-  const sendMessage = (msg) => {
-    if (msg) {
-      const newMessage = createMessage(msg);
-      setMessages([...messages, newMessage]);
-      socket.emit('send_message', msg);
-      setText('');
+  const handleChange = (e, data) => {
+    let val = e.target.value
+    switch(data) {
+      case 'roomText':
+        setRoomText(val);
+      break;
+
+      case 'nameText':
+        setNameText(val);
+      break;
+
+      case 'typeText':
+        setTypeText(val);
+      break;
+      
+      default:
+        return;
+    }
+  } 
+
+  const getTime = () => {
+    let d = new Date();
+    return d.toLocaleTimeString().slice(0, -3); 
+  }
+
+  function Message(text)  {
+      this.userName = name;
+      this.text = text;
+      this.time = getTime();
+      //return {userName: name, text: msg, time: time}
+  } 
+    
+  const sendMessage = (txt) => {
+    if (txt) {
+      const message = new Message(txt);
+      socket.emit('send_message', message);
+      setTypeText('');
     }
   }
 
@@ -60,18 +72,55 @@ const App = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
   }
 
+  
+  socket.on('joinRoom', (location) => {
+    setRoom(location);
+  });
+
+  useEffect(() => {
+    socket.once('send_message', function(msg) {
+      //console.log('receiving msg: ' + msg);
+      setMessages([...messages, msg]);
+    });
+    // socket.once('message', function(msg) {
+    //   console.log('received: ' + msg);
+    //   const newMessage = createMessage(msg);
+    //   setMessages([...messages, newMessage]);
+    // });
+    if (view === 'chat') {
+      scrollToBottom();
+    }
+  }, [messages, view]);
+
   return (
     <div className="App">
-      <div className="wrapper">
-        <div className="statusBar">
-          <h2>Lost In Translation</h2>
-        </div>
-        <ul id="messages">{messages} <div ref={messagesEndRef} /></ul>
-        <form className="messageForm" action="" onSubmit={(e) => e.preventDefault()}>
-          <input id="m" autoComplete="off" value={text} onChange={(e) => handleChange(e)} />
-          <button onClick={()=>sendMessage(text)}>Send</button>
-        </form>
-      </div>
+
+        {view === 'signin' && (
+          <div className="wrapper">
+            <StatusBar room={room} name={name} />
+            <SignIn
+              handleChange={handleChange}
+              nameText={nameText}
+              roomText={roomText}
+              login={login}
+            />
+           </div>
+        )}
+        {view === 'chat' && (
+          <div className="wrapper">
+            <StatusBar room={room} name={name} />
+            <ChatWindow 
+              messages={messages}
+              messagesEndRef={messagesEndRef}
+              typeText={typeText}
+              handleChange={handleChange}
+              sendMessage={sendMessage}
+              name={name}
+              setTypeText={setTypeText}
+            />
+           </div>
+        )}
+
     </div>
   );
 }
