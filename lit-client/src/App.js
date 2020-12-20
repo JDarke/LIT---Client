@@ -3,8 +3,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import './App.scss';
 import ChatWindow from './components/chatWindow/ChatWindow.comp';
-import StatusBar from './components/statusBar/StatusBar.comp';
-import SignIn from './components/signIn/SignIn.comp';
+import Header from './components/header/Header.comp';
+import Home from './components/home/Home.comp';
+import SelectRoom from './components/SelectRoom/SelectRoom.comp';
 import Footer from './components/footer/Footer.comp';
 const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
@@ -17,16 +18,16 @@ const App = () => {
   const [roomText, setRoomText] = useState("");
   const [name, setName] = useState(nameText);
   const [room, setRoom] = useState(roomText);
-  const [view, setView] = useState("signin");
+  const [view, setView] = useState("home");
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   
 
-  const login = (chosenName, chosenRoom) => {
-    socket.emit("join", { name: chosenName, room: chosenRoom });
-    setRoom(chosenRoom);
+  const login = (chosenName) => {
+    socket.emit("login", { name: chosenName});
+    // setRoom(chosenRoom);
     setName(chosenName);
-    setView('chat');
+    setView('selectRoom');
   }
 
   const handleChange = (e, data) => {
@@ -73,6 +74,23 @@ const App = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
   }
 
+  // const clearMessages = () => {
+  //   setMessages([]);
+  // }
+
+  const joinRoom = (chosenRoom) => {
+    socket.emit("join", { name: name, room: chosenRoom });
+    setView('chat');
+    //setMessages([]);
+    setRoom('');
+  }
+  
+  const leaveRoom = () => {
+    socket.emit('leave', ({name, room}))
+    setView('selectRoom');
+    //setMessages([]);
+    setRoom('');
+  }
   
   socket.on('joinRoom', (location) => {
     setRoom(location);
@@ -83,11 +101,7 @@ const App = () => {
       //console.log('receiving msg: ' + msg);
       setMessages([...messages, msg]);
     });
-    // socket.once('message', function(msg) {
-    //   console.log('received: ' + msg);
-    //   const newMessage = createMessage(msg);
-    //   setMessages([...messages, newMessage]);
-    // });
+
     if (view === 'chat') {
       scrollToBottom();
     }
@@ -95,30 +109,37 @@ const App = () => {
 
   return (
     <div className="App">
-        <div className="wrapper">
-        <StatusBar 
-              room={room} 
-              name={name} 
-              view={view}
-            />
-        {view === 'signin' && (
-            <SignIn
-              handleChange={handleChange}
-              nameText={nameText}
-              roomText={roomText}
-              login={login}
-            />
+      <div className="wrapper">
+        <Header 
+          room={room} 
+          name={name} 
+          view={view}
+          leaveRoom={leaveRoom}
+        />
+        {view === 'home' && (
+          <Home
+            handleChange={handleChange}
+            nameText={nameText}
+            login={login}
+          />
+        )}
+        {view === 'selectRoom' && (
+          <SelectRoom
+            handleChange={handleChange}
+            roomText={roomText}
+            joinRoom={joinRoom}
+          />
         )}
         {view === 'chat' && (
-            <ChatWindow 
-              messages={messages}
-              messagesEndRef={messagesEndRef}
-              typeText={typeText}
-              handleChange={handleChange}
-              sendMessage={sendMessage}
-              name={name}
-              setTypeText={setTypeText}
-            />
+          <ChatWindow 
+            messages={messages}
+            messagesEndRef={messagesEndRef}
+            typeText={typeText}
+            handleChange={handleChange}
+            sendMessage={sendMessage}
+            name={name}
+            setTypeText={setTypeText}
+          />
         )}
         <Footer 
           view={view} 
@@ -126,7 +147,7 @@ const App = () => {
           handleChange={handleChange}
           sendMessage={sendMessage}
         />
-        </div>
+      </div>
     </div>
   );
 }

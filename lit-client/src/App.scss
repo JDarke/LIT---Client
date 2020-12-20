@@ -62,6 +62,7 @@
 }
 
 .statusBar {
+  position: relative;
   background: #f9f9f9;
   border-radius: 25px 25px 0 0;
   -webkit-border-radius: 25px 25px 0 0;
@@ -180,6 +181,32 @@ ul {
   }
 }
 
+
+.menuLink {
+  position: absolute;
+  right: 1.5em;
+  top: 39%;
+  width: 20px;
+  height:20px;
+  font-size: 16px;
+}
+
+.backLink {
+  position: absolute;
+  left: 1.5em;
+  top: 37%;
+
+  width: 20px;
+  height:20px;
+  font-size: 16px;
+  // border: 2px solid #999;
+  // border-radius: 50%;
+  // -webkit-border-radius: 50%;
+  // -moz-border-radius: 50%;
+  // -ms-border-radius: 50%;
+  // -o-border-radius: 50%;
+}
+
 .message-user {
   align-self: flex-end;
   background: rgb(202, 239, 255);
@@ -197,16 +224,22 @@ ul {
 }
 
 .message-admin {
+  padding: 10px;
+  margin-left: 0.5em;margin-right: 0;
+  text-align: center;
+  width: 100%;
+  color: #aaa;
   background: none;
   font-weight: normal;
   align-self: center;
-  border: 1px solid #aaa;
-  border-radius: 25px;
-  -webkit-border-radius: 25px;
-  -moz-border-radius: 25px;
-  -ms-border-radius: 25px;
-  -o-border-radius: 25px;
-  
+  //border-top: 1px solid rgb(214, 214, 214);
+  //border-bottom: 1px solid rgb(214, 214, 214);
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+
   .timeStamp {
     align-self: center;
     text-align: center;
