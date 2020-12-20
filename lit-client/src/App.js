@@ -5,31 +5,32 @@ import './App.scss';
 import ChatWindow from './components/chatWindow/ChatWindow.comp';
 import StatusBar from './components/statusBar/StatusBar.comp';
 import SignIn from './components/signIn/SignIn.comp';
+import Footer from './components/footer/Footer.comp';
 const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
 
 
 const App = () => {
   //const [test, setTest] = useState('test');
-  const [typeText, setTypeText] = useState("text");
-  const [nameText, setNameText] = useState("text");
-  const [roomText, setRoomText] = useState("text");
-  const [name, setName] = useState("");
-  const [room, setRoom] = useState("");
+  const [typeText, setTypeText] = useState("");
+  const [nameText, setNameText] = useState("");
+  const [roomText, setRoomText] = useState("");
+  const [name, setName] = useState(nameText);
+  const [room, setRoom] = useState(roomText);
   const [view, setView] = useState("signin");
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
   
 
-  const login = (nameText, roomText) => {
-    socket.emit("join", { nameText, roomText });
-    setRoom(roomText);
-    setName(nameText);
+  const login = (chosenName, chosenRoom) => {
+    socket.emit("join", { name: chosenName, room: chosenRoom });
+    setRoom(chosenRoom);
+    setName(chosenName);
     setView('chat');
   }
 
   const handleChange = (e, data) => {
-    let val = e.target.value
+    let val = e.target.value;
     switch(data) {
       case 'roomText':
         setRoomText(val);
@@ -94,21 +95,21 @@ const App = () => {
 
   return (
     <div className="App">
-
+        <div className="wrapper">
+        <StatusBar 
+              room={room} 
+              name={name} 
+              view={view}
+            />
         {view === 'signin' && (
-          <div className="wrapper">
-            <StatusBar room={room} name={name} />
             <SignIn
               handleChange={handleChange}
               nameText={nameText}
               roomText={roomText}
               login={login}
             />
-           </div>
         )}
         {view === 'chat' && (
-          <div className="wrapper">
-            <StatusBar room={room} name={name} />
             <ChatWindow 
               messages={messages}
               messagesEndRef={messagesEndRef}
@@ -118,9 +119,14 @@ const App = () => {
               name={name}
               setTypeText={setTypeText}
             />
-           </div>
         )}
-
+        <Footer 
+          view={view} 
+          typeText={typeText}
+          handleChange={handleChange}
+          sendMessage={sendMessage}
+        />
+        </div>
     </div>
   );
 }
