@@ -152,9 +152,9 @@ const App = () => {
             handleChange={handleChange}
             sendMessage={sendMessage}
             name={name}
-            setTypeText={setTypeText}
+            setTypeText={setTypeText} 
           />
-        )}
+        )} 
         <Footer 
           view={view} 
           typeText={typeText}
