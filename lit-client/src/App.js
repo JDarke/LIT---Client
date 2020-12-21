@@ -7,6 +7,7 @@ import Header from './components/header/Header.comp';
 import Home from './components/home/Home.comp';
 import SelectRoom from './components/SelectRoom/SelectRoom.comp';
 import Footer from './components/footer/Footer.comp';
+import Menu from './components/menu/Menu.comp'
 const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
 
@@ -21,6 +22,8 @@ const App = () => {
   const [view, setView] = useState("home");
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
+  const [roomInfo, setRoomInfo] = useState({});
+  const [showMenu, setShowMenu] = useState(false);
   
 
   const login = (chosenName) => {
@@ -32,7 +35,7 @@ const App = () => {
   }
 
   const logout = () => {
-    socket.emit("logout", {name});
+    socket.emit("logout", {});
     setName('');
     setView('home');
   }
@@ -58,6 +61,10 @@ const App = () => {
     setView('selectRoom');
     setMessages([]);
     setRoom('');
+  }
+
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
   }
 
   const handleChange = (e, data) => {
@@ -129,32 +136,38 @@ const App = () => {
           name={name} 
           view={view}
           navBack={navBack}
+          toggleMenu={toggleMenu}
         />
-        {view === 'home' && (
-          <Home
-            handleChange={handleChange}
-            nameText={nameText}
-            login={login}
-          />
-        )}
-        {view === 'selectRoom' && (
-          <SelectRoom
-            handleChange={handleChange}
-            roomText={roomText}
-            joinRoom={joinRoom}
-          />
-        )}
-        {view === 'chat' && (
-          <ChatWindow 
-            messages={messages}
-            messagesEndRef={messagesEndRef}
-            typeText={typeText}
-            handleChange={handleChange}
-            sendMessage={sendMessage}
-            name={name}
-            setTypeText={setTypeText} 
-          />
-        )} 
+        <div className="innerWrapper">
+          {showMenu === true && (
+            <Menu />
+          )}
+          {view === 'home' && (
+            <Home
+              handleChange={handleChange}
+              nameText={nameText}
+              login={login}
+            />
+          )}
+          {view === 'selectRoom' && (
+            <SelectRoom
+              handleChange={handleChange}
+              roomText={roomText}
+              joinRoom={joinRoom}
+            />
+          )}
+          {view === 'chat' && (
+            <ChatWindow 
+              messages={messages}
+              messagesEndRef={messagesEndRef}
+              typeText={typeText}
+              handleChange={handleChange}
+              sendMessage={sendMessage}
+              name={name}
+              setTypeText={setTypeText} 
+            />
+          )} 
+        </div>
         <Footer 
           view={view} 
           typeText={typeText}
