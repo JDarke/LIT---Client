@@ -16,14 +16,15 @@ const App = () => {
   //const [test, setTest] = useState('test');
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
-  const [roomText, setRoomText] = useState("");
+  const [createRoomText, setCreateRoomText] = useState("");
+  const [joinRoomText, setJoinRoomText] = useState("");
   const [name, setName] = useState(nameText);
-  const [room, setRoom] = useState(roomText);
+  const [room, setRoom] = useState(createRoomText);
+  const [roomsList, setRoomsList] = useState([]);
   const [view, setView] = useState("home");
   const [messages, setMessages] = useState([]);
-  const messagesEndRef = useRef(null);
-  const [roomInfo, setRoomInfo] = useState({});
   const [showMenu, setShowMenu] = useState(false);
+  const messagesEndRef = useRef(null);
   
 
   const login = (chosenName) => {
@@ -40,14 +41,6 @@ const App = () => {
     setView('home');
   }
 
-  const navBack = () => {
-    if (view === 'chat') {
-      leaveRoom();
-    } else if (view === 'selectRoom') {
-      logout();
-    }
-  }
-
   const joinRoom = (chosenRoom) => {
     if (chosenRoom) {
       socket.emit("join", { name: name, room: chosenRoom });
@@ -62,6 +55,14 @@ const App = () => {
     setMessages([]);
     setRoom('');
   }
+  
+  const navBack = () => {
+    if (view === 'chat') {
+      leaveRoom();
+    } else if (view === 'selectRoom') {
+      logout();
+    }
+  }
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -70,8 +71,12 @@ const App = () => {
   const handleChange = (e, data) => {
     let val = e.target.value;
     switch(data) {
-      case 'roomText':
-        setRoomText(val);
+      case 'createRoomText':
+        setCreateRoomText(val);
+      break;
+
+      case 'joinRoomText':
+        setJoinRoomText(val);
       break;
 
       case 'nameText':
@@ -119,6 +124,10 @@ const App = () => {
     setRoom(location);
   });
 
+  socket.on('roomInfo', (rooms) => {
+    setRoomsList(rooms);
+  });
+
   useEffect(() => {
     socket.once('send_message', function(msg) {
       setMessages([...messages, msg]);
@@ -139,7 +148,7 @@ const App = () => {
           toggleMenu={toggleMenu}
         />
         <div className="innerWrapper">
-          {showMenu === true && (
+          {showMenu && (
             <Menu />
           )}
           {view === 'home' && (
@@ -152,8 +161,10 @@ const App = () => {
           {view === 'selectRoom' && (
             <SelectRoom
               handleChange={handleChange}
-              roomText={roomText}
+              createRoomText={createRoomText}
+              joinRoomText={joinRoomText}
               joinRoom={joinRoom}
+              roomsList={roomsList}
             />
           )}
           {view === 'chat' && (
