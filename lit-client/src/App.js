@@ -24,10 +24,40 @@ const App = () => {
   
 
   const login = (chosenName) => {
-    socket.emit("login", { name: chosenName});
-    // setRoom(chosenRoom);
-    setName(chosenName);
+    if (chosenName) {
+      socket.emit("login", { name: chosenName});
+      setName(chosenName);
+      setView('selectRoom');
+    }
+  }
+
+  const logout = () => {
+    socket.emit("logout", {name});
+    setName('');
+    setView('home');
+  }
+
+  const navBack = () => {
+    if (view === 'chat') {
+      leaveRoom();
+    } else if (view === 'selectRoom') {
+      logout();
+    }
+  }
+
+  const joinRoom = (chosenRoom) => {
+    if (chosenRoom) {
+      socket.emit("join", { name: name, room: chosenRoom });
+      setView('chat');
+      setRoom('');
+    }
+  }
+  
+  const leaveRoom = () => {
+    socket.emit('leave', ({name, room}))
     setView('selectRoom');
+    setMessages([]);
+    setRoom('');
   }
 
   const handleChange = (e, data) => {
@@ -76,21 +106,7 @@ const App = () => {
 
   // const clearMessages = () => {
   //   setMessages([]);
-  // }
-
-  const joinRoom = (chosenRoom) => {
-    socket.emit("join", { name: name, room: chosenRoom });
-    setView('chat');
-    //setMessages([]);
-    setRoom('');
-  }
-  
-  const leaveRoom = () => {
-    socket.emit('leave', ({name, room}))
-    setView('selectRoom');
-    //setMessages([]);
-    setRoom('');
-  }
+  //}
   
   socket.on('joinRoom', (location) => {
     setRoom(location);
@@ -98,10 +114,8 @@ const App = () => {
 
   useEffect(() => {
     socket.once('send_message', function(msg) {
-      //console.log('receiving msg: ' + msg);
       setMessages([...messages, msg]);
     });
-
     if (view === 'chat') {
       scrollToBottom();
     }
@@ -114,7 +128,7 @@ const App = () => {
           room={room} 
           name={name} 
           view={view}
-          leaveRoom={leaveRoom}
+          navBack={navBack}
         />
         {view === 'home' && (
           <Home

@@ -6,7 +6,7 @@ const Home = ({nameText, login, handleChange}) => {
     return (
 
         <ul id="messages">
-            <form className="nameForm" action="" onSubmit={(e) => e.preventDefault()}>
+            <form className="loginForm" action="" onSubmit={(e) => e.preventDefault()}>
                 <input placeholder="Name" id="name" autoComplete="off" value={nameText} onChange={(e) => handleChange(e, 'nameText')} />
                 <button onClick={()=>login(nameText)}>Login</button>
             </form>
