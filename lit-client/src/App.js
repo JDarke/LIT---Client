@@ -19,7 +19,7 @@ const App = () => {
   const [createRoomText, setCreateRoomText] = useState("");
   const [joinRoomText, setJoinRoomText] = useState("");
   const [name, setName] = useState(nameText);
-  const [room, setRoom] = useState(createRoomText);
+  const [room, setRoom] = useState(joinRoomText);
   const [roomsList, setRoomsList] = useState([]);
   const [view, setView] = useState("home");
   const [messages, setMessages] = useState([]);

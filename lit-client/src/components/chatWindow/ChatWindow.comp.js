@@ -1,6 +1,4 @@
-
 import React from 'react';
-
 
 const ChatWindow = ({ messages, messagesEndRef, name }) => {
     return (

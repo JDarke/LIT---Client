@@ -1,3 +1,16 @@
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(177, 177, 177);
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: rgb(209, 209, 209);
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: rgb(209, 209, 209);
+}
+
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -61,7 +74,7 @@
   color: white;
 }
 
-.statusBar {
+.header {
   height: 72px;
   padding: 0 1em;
   display: flex;
@@ -81,15 +94,19 @@
 
 .innerWrapper {
   position: relative;
-  
+  min-height: 500px;
+  background: white;
+  overflow: hidden;
 }
 
 .pageWrapper { 
+  padding: 1em;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: white;
 }
 
 ul {
@@ -163,6 +180,8 @@ ul {
   background: white;
 }
 
+
+
 .footer {
   background: #f9f9f9;
   border-radius: 0 0 25px 25px;
@@ -184,6 +203,27 @@ ul {
   input, button {
     margin-top: 15px;
     font-size: 1.2em;
+  }
+  input {
+    border: none;
+    border-bottom: 2px solid darkgrey;
+  }
+  
+  button {
+    border: none;
+    -webkit-border-radius: 8;
+    -moz-border-radius: 8;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 18px;
+    background: #3498db;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+    cursor: pointer;
+    &:hover {
+        background: #3cb0fd;
+        text-decoration: none;
+    }
   }
   span { 
     text-align: left;

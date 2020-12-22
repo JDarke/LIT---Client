@@ -4,15 +4,13 @@ import React from 'react';
 const Menu = ({ view, roomInfo, name }) => {
 
     return (
-
-            <div className="menu">  
-                <ul>
-                    <li>Exit</li>
-                    <li>Select Room</li>
-                    <li>Room Info</li>
-                </ul>   
-            </div>
-
+        <div className="menu">  
+            <ul>
+                <li>Exit</li>
+                <li>Select Room</li>
+                <li>Room Info</li>
+            </ul>   
+        </div>
     )    
 }
 
