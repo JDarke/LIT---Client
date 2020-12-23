@@ -44,8 +44,6 @@ const App = () => {
     }
   }
 
-
-
   const logout = () => {
     socket.emit("logout", {});
     setName('');
@@ -79,7 +77,6 @@ const App = () => {
       
     }
   }
-
 
   const leaveRoom = () => {
     socket.emit('leave', ({name, room}))
@@ -152,9 +149,9 @@ const App = () => {
   //   setMessages([]);
   //}
   
-  socket.on('joinRoom', (location) => {
-    setRoom(location);
-  });
+  // socket.on('joinRoom', (location) => {
+  //   setRoom(location);
+  // });
 
   socket.on('roomInfo', (rooms) => {
     setRoomsList(rooms);
@@ -168,6 +165,19 @@ const App = () => {
       scrollToBottom();
     }
   }, [messages, view]);
+
+  
+  useEffect(() => {
+    setWarnRoomText('');
+  }, [joinRoomText]);
+
+  useEffect(() => {
+    setWarnCreateRoomText('');
+  }, [createRoomText]);
+
+  useEffect(() => {
+    setWarnText('');
+  }, [nameText]);
 
   return (
     <div className="App">
