@@ -1,23 +1,23 @@
 import React from 'react';
 
-const SelectRoom = ({createRoomText, joinRoomText, joinRoom, handleChange, roomsList}) => {
+const SelectRoom = ({createRoomText, joinRoomText, warnRoomText, warnCreateRoomText, createRoom, joinRoom, handleChange, roomsList}) => {
     return (
         <div className="pageWrapper">
             <div className="publicRooms">
                 <h3  style={{marginTop: '0'}}>Create a room</h3>
-                
+                <div className="warnText">{warnCreateRoomText}</div>
                 <form className="loginForm" action="" onSubmit={(e) => e.preventDefault()}>
                     <input placeholder="Room" id="room" autoComplete="off" value={createRoomText} onChange={(e) => handleChange(e, 'createRoomText')} />
                     <span>
                         <input type="checkbox"></input> Room is public
                     </span>
-                    <button onClick={()=>joinRoom(createRoomText)}>Create</button>
+                    <button onClick={()=>createRoom(createRoomText)}>Create</button>
                 </form>
                 
                 <br />
                 <br />
                 <h3>Join Room</h3>
-                
+                <div className="warnText">{warnRoomText}</div>
                 <form className="loginForm" action="" onSubmit={(e) => e.preventDefault()}>
                     <input placeholder="Room" id="room" autoComplete="off" value={joinRoomText} onChange={(e) => handleChange(e, 'joinRoomText')} />
                     <button onClick={()=>joinRoom(joinRoomText)}>Join</button>

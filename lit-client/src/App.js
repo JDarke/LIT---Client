@@ -16,6 +16,9 @@ const App = () => {
   //const [test, setTest] = useState('test');
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
+  const [warnText, setWarnText] = useState("");
+  const [warnRoomText, setWarnRoomText] = useState("");
+  const [warnCreateRoomText, setWarnCreateRoomText] = useState("");
   const [createRoomText, setCreateRoomText] = useState("");
   const [joinRoomText, setJoinRoomText] = useState("");
   const [name, setName] = useState(nameText);
@@ -29,11 +32,19 @@ const App = () => {
 
   const login = (chosenName) => {
     if (chosenName) {
-      socket.emit("login", { name: chosenName});
-      setName(chosenName);
-      setView('selectRoom');
+      socket.emit("login", chosenName, (nameIsTaken) => {
+        if (nameIsTaken) {
+          //console.log('Username in use');
+          setWarnText('Username in use');
+        } else {
+          setName(chosenName);
+          setView('selectRoom');
+        }
+      });
     }
   }
+
+
 
   const logout = () => {
     socket.emit("logout", {});
@@ -43,12 +54,33 @@ const App = () => {
 
   const joinRoom = (chosenRoom) => {
     if (chosenRoom) {
-      socket.emit("join", { name: name, room: chosenRoom });
-      setView('chat');
-      setRoom('');
+      socket.emit("join", { name: name, room: chosenRoom }, (roomNotFound) => {
+        if (roomNotFound) {
+          setWarnRoomText('Room does not exist');
+        } else {
+          setView('chat');
+          setRoom(chosenRoom); // was ''
+        }
+      });
+      
     }
   }
   
+  const createRoom = (chosenRoom) => {
+    if (chosenRoom) {
+      socket.emit("create", { name: name, room: chosenRoom }, (roomNameIsTaken) => {
+        if (roomNameIsTaken) {
+          setWarnCreateRoomText('Room already exists');
+        } else {
+          setView('chat');
+          setRoom(chosenRoom);
+        }
+      });
+      
+    }
+  }
+
+
   const leaveRoom = () => {
     socket.emit('leave', ({name, room}))
     setView('selectRoom');
@@ -155,6 +187,7 @@ const App = () => {
             <Home
               handleChange={handleChange}
               nameText={nameText}
+              warnText={warnText}
               login={login}
             />
           )}
@@ -162,8 +195,11 @@ const App = () => {
             <SelectRoom
               handleChange={handleChange}
               createRoomText={createRoomText}
+              warnCreateRoomText={warnCreateRoomText}
+              warnRoomText={warnRoomText}
               joinRoomText={joinRoomText}
               joinRoom={joinRoom}
+              createRoom={createRoom}
               roomsList={roomsList}
             />
           )}
