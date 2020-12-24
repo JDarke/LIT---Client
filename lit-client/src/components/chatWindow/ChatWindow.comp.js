@@ -11,8 +11,7 @@ const ChatWindow = ({ messages, messagesEndRef, name}) => {
                 ))}
                 {/* <div className="typing">{typing}</div> */}
                 <div ref={messagesEndRef} />
-            </ul>
-            
+            </ul>    
     )
 }
 

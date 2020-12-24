@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SelectRoom = ({createRoomText, joinRoomText, warnRoomText, warnCreateRoomText, createRoom, joinRoom, handleChange, roomsList}) => {
+const SelectRoom = ({createRoomText, joinRoomText, warnJoinRoomText, warnCreateRoomText, createRoom, joinRoom, handleChange, roomsList}) => {
     return (
         <div className="pageWrapper">
             {/* <div className="publicRooms"> */}
@@ -17,7 +17,7 @@ const SelectRoom = ({createRoomText, joinRoomText, warnRoomText, warnCreateRoomT
                 <br />
                 <br />
                 <h3>Join Room</h3>
-                <div className="warnText">{warnRoomText}</div>
+                <div className="warnText">{warnJoinRoomText}</div>
                 <form className="loginForm" action="" onSubmit={(e) => e.preventDefault()}>
                     <input placeholder="Room" id="room" autoComplete="off" value={joinRoomText} onChange={(e) => handleChange(e, 'joinRoomText')} />
                     <button onClick={()=>joinRoom(joinRoomText)}>Join</button>

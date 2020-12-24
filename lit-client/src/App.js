@@ -8,16 +8,18 @@ import Home from './components/home/Home.comp';
 import SelectRoom from './components/SelectRoom/SelectRoom.comp';
 import Footer from './components/footer/Footer.comp';
 import Menu from './components/menu/Menu.comp'
+import {useTransition, animated} from 'react-spring'
 const ENDPOINT = 'localhost:8080';
 const socket = io(ENDPOINT);
 
 
 const App = () => {
   //const [test, setTest] = useState('test');
+
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
-  const [warnText, setWarnText] = useState("");
-  const [warnRoomText, setWarnRoomText] = useState("");
+  const [warnNameText, setWarnNameText] = useState("");
+  const [warnJoinRoomText, setWarnRoomText] = useState("");
   const [warnCreateRoomText, setWarnCreateRoomText] = useState("");
   const [createRoomText, setCreateRoomText] = useState("");
   const [joinRoomText, setJoinRoomText] = useState("");
@@ -30,13 +32,13 @@ const App = () => {
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
   
-
+  
   const login = (chosenName) => {
     if (chosenName) {
       socket.emit("login", chosenName, (nameIsTaken) => {
         if (nameIsTaken) {
           //console.log('Username in use');
-          setWarnText('Username in use');
+          setWarnNameText('Username in use');
         } else {
           setName(chosenName);
           setView('selectRoom');
@@ -75,7 +77,6 @@ const App = () => {
           setRoom(chosenRoom);
         }
       });
-      
     }
   }
 
@@ -103,14 +104,17 @@ const App = () => {
     switch(data) {
       case 'createRoomText':
         setCreateRoomText(val);
+        if (warnCreateRoomText !== '') setWarnCreateRoomText('');
       break;
 
       case 'joinRoomText':
         setJoinRoomText(val);
+        if (warnJoinRoomText !== '') setWarnRoomText('');
       break;
 
       case 'nameText':
         setNameText(val);
+        if (warnNameText !== '') setWarnNameText('');
       break;
 
       case 'typeText':
@@ -129,10 +133,10 @@ const App = () => {
   }
 
   function Message(text)  {
-      this.userName = name;
-      this.text = text;
-      this.time = getTime();
-      //return {userName: name, text: msg, time: time}
+    this.userName = name;
+    this.text = text;
+    this.time = getTime();
+    //return {userName: name, text: msg, time: time}
   } 
     
   const sendMessage = (txt) => {
@@ -147,28 +151,24 @@ const App = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
   }
 
-  // const clearMessages = () => {
-  //   setMessages([]);
-  //}
+  useEffect(() => {
+    socket.on('roomInfo', (rooms) => {
+      setRoomsList(rooms);
+    });
   
-  // socket.on('joinRoom', (location) => {
-  //   setRoom(location);
-  // });
+    socket.on('typing', (typingUserName) => {
+        setTyping(typingUserName + ' is typing...');
+        setTimeout(() => {
+          setTyping('');
+        }, 2000);
+    });
 
-  socket.on('roomInfo', (rooms) => {
-    setRoomsList(rooms);
-  });
-
-  socket.on('typing', (typingUserName) => {
-    //if (typingUserName !== name) {
-      setTyping(typingUserName + ' is typing...');
-      setTimeout(() => {
-        setTyping('');
-      }, 2000);
-    //}
-    
-  });
-
+    return () => {
+       socket.off("roomInfo");
+       socket.off("typing");
+    };
+  }, []);
+  
   useEffect(() => {
     socket.once('send_message', function(msg) {
       setMessages([...messages, msg]);
@@ -178,18 +178,12 @@ const App = () => {
     }
   }, [messages, view]);
   
-  useEffect(() => {
-    setWarnRoomText('');
-  }, [joinRoomText]);
-
-  useEffect(() => {
-    setWarnCreateRoomText('');
-  }, [createRoomText]);
-
-  useEffect(() => {
-    setWarnText('');
-  }, [nameText]);
-
+  // const transitions = useTransition(showMenu, null, {
+  //   from: { position: 'absolute', opacity: 0 },
+  //   enter: { opacity: 1 },
+  //   leave: { opacity: 0 },
+  // })
+  
   return (
     <div className="App">
       <div className="wrapper">
@@ -202,14 +196,12 @@ const App = () => {
           toggleMenu={toggleMenu}
         />
         <div className="innerWrapper">
-          {showMenu && (
-            <Menu />
-          )}
+          <Menu showMenu={showMenu} />
           {view === 'home' && (
             <Home
               handleChange={handleChange}
               nameText={nameText}
-              warnText={warnText}
+              warnNameText={warnNameText}
               login={login}
             />
           )}
@@ -218,7 +210,7 @@ const App = () => {
               handleChange={handleChange}
               createRoomText={createRoomText}
               warnCreateRoomText={warnCreateRoomText}
-              warnRoomText={warnRoomText}
+              warnJoinRoomText={warnJoinRoomText}
               joinRoomText={joinRoomText}
               joinRoom={joinRoom}
               createRoom={createRoom}
@@ -238,12 +230,14 @@ const App = () => {
             />
           )} 
         </div>
-        <Footer 
-          view={view} 
-          typeText={typeText}
-          handleChange={handleChange}
-          sendMessage={sendMessage}
-        />
+        {view === 'chat' && (
+          <Footer 
+            view={view} 
+            typeText={typeText}
+            handleChange={handleChange}
+            sendMessage={sendMessage}
+          />
+        )}
       </div>
     </div>
   );
