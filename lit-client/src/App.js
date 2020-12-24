@@ -21,6 +21,7 @@ const App = () => {
   const [warnCreateRoomText, setWarnCreateRoomText] = useState("");
   const [createRoomText, setCreateRoomText] = useState("");
   const [joinRoomText, setJoinRoomText] = useState("");
+  const [typing, setTyping] = useState("");
   const [name, setName] = useState(nameText);
   const [room, setRoom] = useState(joinRoomText);
   const [roomsList, setRoomsList] = useState([]);
@@ -114,6 +115,7 @@ const App = () => {
 
       case 'typeText':
         setTypeText(val);
+        socket.emit('typing', name);
       break;
       
       default:
@@ -157,6 +159,16 @@ const App = () => {
     setRoomsList(rooms);
   });
 
+  socket.on('typing', (typingUserName) => {
+    //if (typingUserName !== name) {
+      setTyping(typingUserName + ' is typing...');
+      setTimeout(() => {
+        setTyping('');
+      }, 2000);
+    //}
+    
+  });
+
   useEffect(() => {
     socket.once('send_message', function(msg) {
       setMessages([...messages, msg]);
@@ -165,7 +177,6 @@ const App = () => {
       scrollToBottom();
     }
   }, [messages, view]);
-
   
   useEffect(() => {
     setWarnRoomText('');
@@ -186,6 +197,7 @@ const App = () => {
           room={room} 
           name={name} 
           view={view}
+          typing={typing}
           navBack={navBack}
           toggleMenu={toggleMenu}
         />
@@ -221,6 +233,7 @@ const App = () => {
               handleChange={handleChange}
               sendMessage={sendMessage}
               name={name}
+              typing={typing}
               setTypeText={setTypeText} 
             />
           )} 

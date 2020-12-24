@@ -3,7 +3,7 @@ import React from 'react';
 const SelectRoom = ({createRoomText, joinRoomText, warnRoomText, warnCreateRoomText, createRoom, joinRoom, handleChange, roomsList}) => {
     return (
         <div className="pageWrapper">
-            <div className="publicRooms">
+            {/* <div className="publicRooms"> */}
                 <h3  style={{marginTop: '0'}}>Create a room</h3>
                 <div className="warnText">{warnCreateRoomText}</div>
                 <form className="loginForm" action="" onSubmit={(e) => e.preventDefault()}>
@@ -31,7 +31,7 @@ const SelectRoom = ({createRoomText, joinRoomText, warnRoomText, warnCreateRoomT
                         <li>No public rooms are active</li>
                     )}
                 </ul>
-            </div>
+            {/* </div> */}
         </div>
     )
 }

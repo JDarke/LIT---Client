@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ChatWindow = ({ messages, messagesEndRef, name }) => {
+const ChatWindow = ({ messages, messagesEndRef, name}) => {
     return (
             <ul id="messages">
                 {messages.map((msg, i) => (
@@ -9,6 +9,7 @@ const ChatWindow = ({ messages, messagesEndRef, name }) => {
                         <div className="timeStamp">{msg.time}</div>
                     </div>
                 ))}
+                {/* <div className="typing">{typing}</div> */}
                 <div ref={messagesEndRef} />
             </ul>
             
