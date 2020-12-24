@@ -1,17 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 //import { BrowserRouter as Router, Route } from 'react-router-dom';
-import io from 'socket.io-client';
-import './App.scss';
-import ChatWindow from './components/chatWindow/ChatWindow.comp';
-import Header from './components/header/Header.comp';
-import Home from './components/home/Home.comp';
-import SelectRoom from './components/SelectRoom/SelectRoom.comp';
-import Footer from './components/footer/Footer.comp';
-import Menu from './components/menu/Menu.comp'
-import {useTransition, animated} from 'react-spring'
-const ENDPOINT = 'localhost:8080';
+import io from "socket.io-client";
+import "./App.scss";
+import ChatWindow from "./components/chatWindow/ChatWindow.comp";
+import Header from "./components/header/Header.comp";
+import Home from "./components/home/Home.comp";
+import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
+import Footer from "./components/footer/Footer.comp";
+import Menu from "./components/menu/Menu.comp";
+import { useTransition, animated } from "react-spring";
+const ENDPOINT = "localhost:8080";
 const socket = io(ENDPOINT);
-
 
 const App = () => {
   //const [test, setTest] = useState('test');
@@ -31,208 +30,223 @@ const App = () => {
   const [messages, setMessages] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
-  
-  
+
   const login = (chosenName) => {
     if (chosenName) {
       socket.emit("login", chosenName, (nameIsTaken) => {
         if (nameIsTaken) {
           //console.log('Username in use');
-          setWarnNameText('Username in use');
+          setWarnNameText("Username in use");
         } else {
           setName(chosenName);
-          setView('selectRoom');
+          setView("selectRoom");
         }
       });
     }
-  }
+  };
 
   const logout = () => {
     socket.emit("logout", {});
-    setName('');
-    setView('home');
-  }
+    setName("");
+    setView("home");
+  };
 
   const joinRoom = (chosenRoom) => {
     if (chosenRoom) {
       socket.emit("join", { name: name, room: chosenRoom }, (roomNotFound) => {
         if (roomNotFound) {
-          setWarnRoomText('Room does not exist');
+          setWarnRoomText("Room does not exist");
         } else {
-          setView('chat');
+          setView("chat");
           setRoom(chosenRoom); // was ''
         }
       });
-      
     }
-  }
-  
+  };
+
   const createRoom = (chosenRoom) => {
     if (chosenRoom) {
-      socket.emit("create", { name: name, room: chosenRoom }, (roomNameIsTaken) => {
-        if (roomNameIsTaken) {
-          setWarnCreateRoomText('Room already exists');
-        } else {
-          setView('chat');
-          setRoom(chosenRoom);
+      socket.emit(
+        "create",
+        { name: name, room: chosenRoom },
+        (roomNameIsTaken) => {
+          if (roomNameIsTaken) {
+            setWarnCreateRoomText("Room already exists");
+          } else {
+            setView("chat");
+            setRoom(chosenRoom);
+          }
         }
-      });
+      );
     }
-  }
+  };
 
   const leaveRoom = () => {
-    socket.emit('leave', ({name, room}))
-    setView('selectRoom');
+    socket.emit("leave", { name, room });
+    setView("selectRoom");
     setMessages([]);
-    setRoom('');
-  }
-  
+    setRoom("");
+  };
+
   const navBack = () => {
-    if (view === 'chat') {
+    if (view === "chat") {
       leaveRoom();
-    } else if (view === 'selectRoom') {
+    } else if (view === "selectRoom") {
       logout();
     }
-  }
+  };
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
-  }
+  };
 
   const handleChange = (e, data) => {
     let val = e.target.value;
-    switch(data) {
-      case 'createRoomText':
+    switch (data) {
+      case "createRoomText":
         setCreateRoomText(val);
-        if (warnCreateRoomText !== '') setWarnCreateRoomText('');
-      break;
+        if (warnCreateRoomText !== "") setWarnCreateRoomText("");
+        break;
 
-      case 'joinRoomText':
+      case "joinRoomText":
         setJoinRoomText(val);
-        if (warnJoinRoomText !== '') setWarnRoomText('');
-      break;
+        if (warnJoinRoomText !== "") setWarnRoomText("");
+        break;
 
-      case 'nameText':
+      case "nameText":
         setNameText(val);
-        if (warnNameText !== '') setWarnNameText('');
-      break;
+        if (warnNameText !== "") setWarnNameText("");
+        break;
 
-      case 'typeText':
+      case "typeText":
         setTypeText(val);
-        socket.emit('typing', name);
-      break;
-      
+        socket.emit("typing", name);
+        break;
+
       default:
         return;
     }
-  } 
+  };
 
   const getTime = () => {
     let d = new Date();
-    return d.toLocaleTimeString().slice(0, -3); 
-  }
+    return d.toLocaleTimeString().slice(0, -3);
+  };
 
-  function Message(text)  {
+  function Message(text) {
     this.userName = name;
     this.text = text;
     this.time = getTime();
     //return {userName: name, text: msg, time: time}
-  } 
-    
+  }
+
   const sendMessage = (txt) => {
     if (txt) {
       const message = new Message(txt);
-      socket.emit('send_message', message);
-      setTypeText('');
+      socket.emit("send_message", message);
+      setTypeText("");
     }
-  }
+  };
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    socket.on('roomInfo', (rooms) => {
+    socket.on("roomInfo", (rooms) => {
       setRoomsList(rooms);
     });
-  
-    socket.on('typing', (typingUserName) => {
-        setTyping(typingUserName + ' is typing...');
-        setTimeout(() => {
-          setTyping('');
-        }, 2000);
+
+    socket.on("typing", (typingUserName) => {
+      setTyping(typingUserName + " is typing...");
+      setTimeout(() => {
+        setTyping("");
+      }, 2000);
     });
 
     return () => {
-       socket.off("roomInfo");
-       socket.off("typing");
+      socket.off("roomInfo");
+      socket.off("typing");
     };
   }, []);
-  
+
   useEffect(() => {
-    socket.once('send_message', function(msg) {
+    socket.once("send_message", function (msg) {
       setMessages([...messages, msg]);
     });
-    if (view === 'chat') {
+    if (view === "chat") {
       scrollToBottom();
     }
   }, [messages, view]);
-  
-  // const transitions = useTransition(showMenu, null, {
-  //   from: { position: 'absolute', opacity: 0 },
-  //   enter: { opacity: 1 },
-  //   leave: { opacity: 0 },
-  // })
-  
+
+  const transitions = useTransition(view, (p) => p, {
+    from: { transform: "translateX(-100%)" },
+    enter: { transform: "translateX(0)" },
+    leave: { transform: "translateX(100%)" },
+  });
+
+  const pages = {
+    home: ({ style }) => (
+      <animated.div style={{ ...style }} className="innerWrapper">
+          <Home
+            handleChange={handleChange}
+            nameText={nameText}
+            warnNameText={warnNameText}
+            login={login}
+          />
+      </animated.div>
+    ),
+    selectRoom: ({ style }) => (
+      <animated.div style={{ ...style }} className="innerWrapper">
+          <SelectRoom
+            handleChange={handleChange}
+            createRoomText={createRoomText}
+            warnCreateRoomText={warnCreateRoomText}
+            warnJoinRoomText={warnJoinRoomText}
+            joinRoomText={joinRoomText}
+            joinRoom={joinRoom}
+            createRoom={createRoom}
+            roomsList={roomsList}
+          />
+      </animated.div>
+    ),
+    chat: ({ style }) => (
+      <animated.div style={{ ...style }} className="innerWrapper">
+          <ChatWindow
+            messages={messages}
+            messagesEndRef={messagesEndRef}
+            typeText={typeText}
+            handleChange={handleChange}
+            sendMessage={sendMessage}
+            name={name}
+            typing={typing}
+            setTypeText={setTypeText}
+          />
+      </animated.div>
+    ),
+  };
+
   return (
     <div className="App">
       <div className="wrapper">
-        <Header 
-          room={room} 
-          name={name} 
+        <Menu showMenu={showMenu} toggleMenu={toggleMenu} />
+        <Header
+          room={room}
+          name={name}
           view={view}
           typing={typing}
           navBack={navBack}
           toggleMenu={toggleMenu}
         />
-        <div className="innerWrapper">
-          <Menu showMenu={showMenu} />
-          {view === 'home' && (
-            <Home
-              handleChange={handleChange}
-              nameText={nameText}
-              warnNameText={warnNameText}
-              login={login}
-            />
-          )}
-          {view === 'selectRoom' && (
-            <SelectRoom
-              handleChange={handleChange}
-              createRoomText={createRoomText}
-              warnCreateRoomText={warnCreateRoomText}
-              warnJoinRoomText={warnJoinRoomText}
-              joinRoomText={joinRoomText}
-              joinRoom={joinRoom}
-              createRoom={createRoom}
-              roomsList={roomsList}
-            />
-          )}
-          {view === 'chat' && (
-            <ChatWindow 
-              messages={messages}
-              messagesEndRef={messagesEndRef}
-              typeText={typeText}
-              handleChange={handleChange}
-              sendMessage={sendMessage}
-              name={name}
-              typing={typing}
-              setTypeText={setTypeText} 
-            />
-          )} 
-        </div>
-        {view === 'chat' && (
-          <Footer 
-            view={view} 
+        {/* <div className="innerWrapper"> */}
+          {transitions.map(({ item, props, key }) => {
+            const Page = pages[item];
+            return <Page key={key} style={props} />;
+          })}
+        {/* </div> */}
+        {view === "chat" && (
+          <Footer
+            view={view}
             typeText={typeText}
             handleChange={handleChange}
             sendMessage={sendMessage}
@@ -241,6 +255,6 @@ const App = () => {
       </div>
     </div>
   );
-}
+};
 
 export default App;
