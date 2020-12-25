@@ -8,7 +8,7 @@ import Home from "./components/home/Home.comp";
 import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
 import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
-import { useTransition, animated } from "react-spring";
+// import { useTransition, animated } from "react-spring";
 const ENDPOINT = "localhost:8080";
 const socket = io(ENDPOINT);
 
@@ -179,52 +179,11 @@ const App = () => {
     }
   }, [messages, view]);
 
-  const transitions = useTransition(view, (p) => p, {
-    from: { transform: "translateX(-100%)" },
-    enter: { transform: "translateX(0)" },
-    leave: { transform: "translateX(100%)" },
-  });
-
-  const pages = {
-    home: ({ style }) => (
-      <animated.div style={{ ...style }} className="innerWrapper">
-          <Home
-            handleChange={handleChange}
-            nameText={nameText}
-            warnNameText={warnNameText}
-            login={login}
-          />
-      </animated.div>
-    ),
-    selectRoom: ({ style }) => (
-      <animated.div style={{ ...style }} className="innerWrapper">
-          <SelectRoom
-            handleChange={handleChange}
-            createRoomText={createRoomText}
-            warnCreateRoomText={warnCreateRoomText}
-            warnJoinRoomText={warnJoinRoomText}
-            joinRoomText={joinRoomText}
-            joinRoom={joinRoom}
-            createRoom={createRoom}
-            roomsList={roomsList}
-          />
-      </animated.div>
-    ),
-    chat: ({ style }) => (
-      <animated.div style={{ ...style }} className="innerWrapper">
-          <ChatWindow
-            messages={messages}
-            messagesEndRef={messagesEndRef}
-            typeText={typeText}
-            handleChange={handleChange}
-            sendMessage={sendMessage}
-            name={name}
-            typing={typing}
-            setTypeText={setTypeText}
-          />
-      </animated.div>
-    ),
-  };
+  // const transitions = useTransition(view, (p) => p, {
+  //   from: { transform: "translateX(-100%)" },
+  //   enter: { transform: "translateX(0)" },
+  //   leave: { transform: "translateX(100%)" },
+  // });
 
   return (
     <div className="App">
@@ -238,12 +197,40 @@ const App = () => {
           navBack={navBack}
           toggleMenu={toggleMenu}
         />
-        {/* <div className="innerWrapper"> */}
-          {transitions.map(({ item, props, key }) => {
-            const Page = pages[item];
-            return <Page key={key} style={props} />;
-          })}
-        {/* </div> */}
+        <div className="innerWrapper">
+          {view === "home" && (
+            <Home
+              handleChange={handleChange}
+              nameText={nameText}
+              warnNameText={warnNameText}
+              login={login}
+            />
+          )}
+          {view === "selectRoom" && (
+            <SelectRoom
+              handleChange={handleChange}
+              createRoomText={createRoomText}
+              warnCreateRoomText={warnCreateRoomText}
+              warnJoinRoomText={warnJoinRoomText}
+              joinRoomText={joinRoomText}
+              joinRoom={joinRoom}
+              createRoom={createRoom}
+              roomsList={roomsList}
+            />
+          )}
+           {view === "chat" && (
+              <ChatWindow
+              messages={messages}
+              messagesEndRef={messagesEndRef}
+              typeText={typeText}
+              handleChange={handleChange}
+              sendMessage={sendMessage}
+              name={name}
+              typing={typing}
+              setTypeText={setTypeText}
+            />
+          )}
+        </div>
         {view === "chat" && (
           <Footer
             view={view}

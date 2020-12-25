@@ -1,7 +1,7 @@
 import React from 'react';
 import {useTransition, animated} from 'react-spring';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 //import { Slide } from "react-awesome-reveal";
 
 const Menu = ({ view, roomInfo, name, showMenu, toggleMenu }) => {
