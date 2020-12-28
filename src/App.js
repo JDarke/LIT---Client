@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 //import { BrowserRouter as Router, Route } from 'react-router-dom';
 import io from "socket.io-client";
 import "./App.scss";
@@ -14,7 +14,7 @@ const socket = io();
 
 const App = () => {
   //const [test, setTest] = useState('test');
-
+  
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
   const [warnNameText, setWarnNameText] = useState("");
@@ -44,6 +44,22 @@ const App = () => {
       });
     }
   };
+
+  const useWindowSize = () => {
+    const [size, setSize] = useState([0, 0]);
+    useLayoutEffect(() => {
+      function updateSize() {
+        setSize([window.innerWidth, window.innerHeight]);
+      }
+      window.addEventListener('resize', updateSize);
+      updateSize();
+      return () => window.removeEventListener('resize', updateSize);
+    }, []);
+    return size;
+  }
+
+  const [, windowHeight] = useWindowSize();
+  
 
   const logout = () => {
     socket.emit("logout", {});
@@ -192,7 +208,9 @@ const App = () => {
   // });
 
   return (
-    <div className="App">
+    <div className="App" style={{
+      height: windowHeight
+    }}>
       <div className="wrapper">
         <Menu showMenu={showMenu} toggleMenu={toggleMenu} />
         <Header
