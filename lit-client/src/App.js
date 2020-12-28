@@ -39,7 +39,7 @@ const App = () => {
           setWarnNameText("Username in use");
         } else {
           setName(chosenName);
-          setView("selectRoom");
+          setView("createRoom");
         }
       });
     }
@@ -83,7 +83,7 @@ const App = () => {
 
   const leaveRoom = () => {
     socket.emit("leave", { name, room });
-    setView("selectRoom");
+    setView("joinRoom");
     setMessages([]);
     setRoom("");
   };
@@ -91,7 +91,7 @@ const App = () => {
   const navBack = () => {
     if (view === "chat") {
       leaveRoom();
-    } else if (view === "selectRoom") {
+    } else if (view === "createRoom" || view === "joinRoom") {
       logout();
     }
   };
@@ -99,6 +99,12 @@ const App = () => {
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
+
+  const handleRoomTab = (chosenView) => {
+    if (chosenView !== view) {
+      setView (chosenView);
+    }
+  }
 
   const handleChange = (e, data) => {
     let val = e.target.value;
@@ -206,9 +212,11 @@ const App = () => {
               login={login}
             />
           )}
-          {view === "selectRoom" && (
+          {(view === "joinRoom" || view === "createRoom") && (
             <SelectRoom
+              view={view}
               handleChange={handleChange}
+              handleRoomTab={handleRoomTab}
               createRoomText={createRoomText}
               warnCreateRoomText={warnCreateRoomText}
               warnJoinRoomText={warnJoinRoomText}

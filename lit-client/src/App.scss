@@ -1,12 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
 
-$fontSizeSm: 13px;
+$fontSizeSm: 16px;
 $fontSizeLg: 16px;
 $messagePaddingSm: 5px 10px;
 $messagePaddingLg: 10px 15px;
 $windowPadding: 5px;
 $msgBorderRadiusSm: 10px;
 $msgBorderRadiusLg: 15px;
+$headerGrey: #f3f3f3;
 
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -98,7 +99,7 @@ ul {
   align-items: center;
   //width: 100%;
   position: relative;
-  background: #f9f9f9;
+  background: $headerGrey;
   // border-radius: 25px 25px 0 0;
   // -webkit-border-radius: 25px 25px 0 0;
   // -moz-border-radius: 25px 25px 0 0;
@@ -124,21 +125,22 @@ ul {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   background: white;
   overflow: hidden;
 }
 
 .pageWrapper { 
-  padding: 1em 0;
+  height: 100%;
+  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   background: white;
   width: 100%;
-  overflow-y: auto;
+  //overflow-y: auto;
   .warnText {
     color: rgb(220, 77, 11);
     height: 25px;
@@ -174,7 +176,42 @@ ul {
       }
     }
     span { 
-      text-align: left;
+      text-align: center;
+    }
+  }
+}
+
+.selectWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding: 0 1em;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  p {
+    width: 72%;
+  }
+  >* {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
+
+.selectRoomTabs {
+  
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  background: $headerGrey;
+  .roomTab {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    &.active {
+      cursor: unset;
+      font-weight: bold;
+      background: white;
     }
   }
 }
@@ -268,7 +305,7 @@ ul {
 }
 
 .footer {
-  background: #f9f9f9;
+  background: $headerGrey;
   // border-radius: 0 0 25px 25px;
   // -webkit-border-radius: 0 0 25px 25px;
   // -moz-border-radius: 0 0 25px 25px;
