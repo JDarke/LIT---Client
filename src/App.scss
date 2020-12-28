@@ -216,16 +216,16 @@ ul {
 }
 
 .selectRoomTabs {
-  
-
   width: 100%;
   display: flex;
   background: $headerGrey;
+  user-select: none;
   .roomTab {
     padding: 10px;
     width: 100%;
     text-align: center;
     cursor: pointer;
+    user-select: none;
     &.active {
       cursor: unset;
       font-weight: bold;
