@@ -73,9 +73,9 @@ const getUsersInRoom = (room) => {
 
 io.on("connection", (socket) => {
   console.log("user connected: " + socket.client.id + ' ' + getTime());
-  
+  getRooms();
 
-  // do we need to ping the room info to users on connection?  Is it currently being done only when entering rooms?
+  // do we need to ping the room info to users on connection?  Is it currently being done only when entering rooms? --fix - see above
 
   socket.on("send_message", (msg) => {
     console.log(msg.userName + ": " + msg.text);
@@ -199,7 +199,7 @@ io.on("connection", (socket) => {
         roomNotFound(false);
         user.room = userRoom;
         socket.join(userRoom);
-        socket.broadcast.emit("send_message", {
+        socket.to(userRoom).emit("send_message", {
           userName: "admin",
           text: `${name} has joined ${userRoom}`,
           time: getTime(),
