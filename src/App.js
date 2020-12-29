@@ -35,6 +35,7 @@ const App = () => {
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [view, setView] = useState("createRoom");
   const [messages, setMessages] = useState([]);
+  const [litMode, setLitMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const location = useLocation();
@@ -167,8 +168,14 @@ const App = () => {
     }
   };
 
-  const toggleMenu = () => {
+  const toggleMenu = () => { //abstract these two into a toggle function for all boolean useStates
     setShowMenu(!showMenu);
+  };
+
+  const toggleLitMode = () => {
+    console.log(!litMode, name, room)
+    socket.emit('lit-mode', !litMode, name, room );
+    setLitMode(!litMode);
   };
 
   const handleRoomTab = (chosenView) => {
@@ -214,6 +221,7 @@ const App = () => {
     this.userName = name;
     this.text = text;
     this.time = getTime();
+    this.lit = litMode;
     //return {userName: name, text: msg, time: time}
   }
 
@@ -228,6 +236,7 @@ const App = () => {
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
+
 
   useEffect(() => {
     socket.on("roomInfo", (rooms) => {
@@ -252,6 +261,7 @@ const App = () => {
     };
   }, []);
 
+
   useEffect(() => {
     socket.once("send_message", function (msg) {
       setMessages([...messages, msg]);
@@ -275,7 +285,7 @@ const App = () => {
       }}
     >
       <div className="wrapper">
-        <Menu showMenu={showMenu} toggleMenu={toggleMenu} />
+        <Menu showMenu={showMenu} toggleMenu={toggleMenu} litMode={litMode} toggleLitMode={toggleLitMode} />
         <Header
           location={location}
           room={room}

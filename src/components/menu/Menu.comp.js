@@ -1,10 +1,10 @@
 import React from 'react';
 import {useTransition, animated} from 'react-spring';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 //import { Slide } from "react-awesome-reveal";
 
-const Menu = ({ view, roomInfo, name, showMenu, toggleMenu }) => {
+const Menu = ({ view, roomInfo, name, showMenu, toggleMenu, litMode, toggleLitMode }) => {
     const transitions = useTransition(showMenu, null, {
         from: { opacity: 0 },
         enter: { opacity: 1 },
@@ -12,12 +12,12 @@ const Menu = ({ view, roomInfo, name, showMenu, toggleMenu }) => {
     })
     return transitions.map(({ item, key, props }) =>
         item && <animated.div key={key} style={props} className="menu">  
+                    <FontAwesomeIcon icon={faTimes} className="menuLink" onClick={()=>toggleMenu()}/>
                     <ul>
-                        <li> <FontAwesomeIcon icon={faBars} className="menuLink" onClick={()=>toggleMenu()}/></li>
                         <li><h3>Menu</h3></li>
-                        <li>Exit</li>
-                        <li>Select Room</li>
+                        <li onClick={()=>toggleLitMode()}>Translation mode: {litMode ? 'On' : 'Off'}</li>
                         <li>Room Info</li>
+                        <li>Exit</li>
                     </ul>   
                 </animated.div>
     )    

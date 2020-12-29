@@ -400,6 +400,7 @@ ul {
 
 
 .menu {
+  //padding: 18px; 
   z-index: 100;
   //margin-top: 72px;
   position: absolute;
@@ -411,7 +412,13 @@ ul {
   justify-content: flex-start;
   align-items: center;
   background: #f0f0f0;
-  
+  .menuLink {
+    align-self: flex-end;
+    position: relative;
+    top: 26px;
+    right: 23px;
+    font-size: 1.6em;
+  }
   ul {
     height: 50%;
     background: none;
