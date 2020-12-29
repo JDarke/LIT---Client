@@ -49,22 +49,22 @@ const App = () => {
         console.log(newPath);
         //let backTarget;
 
-        if (action === "PUSH") {
-          if (newPath !== path) {
-            // if (path === '/rooms') {
-            //   backTarget = '/';
-            // } else if (path === '/chat') {
-            //   backTarget = '/rooms';
-            // } else if (path === '/') {
-            //   backTarget = '/';
-            // }
+        // if (action === "PUSH") {
+        //   if (newPath !== path) {
+        //     // if (path === '/rooms') {
+        //     //   backTarget = '/';
+        //     // } else if (path === '/chat') {
+        //     //   backTarget = '/rooms';
+        //     // } else if (path === '/') {
+        //     //   backTarget = '/';
+        //     // }
 
-            history.push(newPath);
-          }
-        } else {
-          // Send user back if they try to navigate back
-          history.go(1);
-        }
+        //     history.push(newPath);
+        //   }
+        // } else {
+        //   // Send user back if they try to navigate back
+        //   history.go(1);
+        // }
       }),
     [location, history]
   );

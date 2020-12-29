@@ -18,10 +18,10 @@ let rooms = [];
 
 // const getData = async (url, data) => {
      //const response = 
-     fetch('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json', {
-          method: 'GET', 
-          mode: 'cors',
-        }).then(res => res.json()).then(data => console.log(data));
+     // fetch('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json', {
+     //      method: 'GET', 
+     //      mode: 'cors',
+     //    }).then(res => res.json()).then(data => console.log(data));
         //console.log(response);
         //return response;
 // }
@@ -72,7 +72,7 @@ const getUsersInRoom = (room) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("user connected: " + socket.client.id);
+  console.log("user connected: " + socket.client.id + ' ' + getTime());
 
   socket.on("send_message", (msg) => {
     console.log(msg.userName + ": " + msg.text);
@@ -174,7 +174,7 @@ io.on("connection", (socket) => {
         });
         getRooms();
         io.emit("roomInfo", rooms);
-        io.emit("usersInRoom", getUsersInRoom(room));
+        io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room));
 
         console.log(users);
         console.log(rooms);
@@ -206,7 +206,7 @@ io.on("connection", (socket) => {
           time: getTime(),
         });
         getRooms();
-        io.emit("usersInRoom", getUsersInRoom(userRoom));
+        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
 
         console.log(users);
         console.log(rooms);
@@ -224,10 +224,12 @@ io.on("connection", (socket) => {
     if (user) {
       user.room = "";
     }
+    socket.leave(room);
     getRooms();
     io.emit("roomInfo", rooms);
-    io.emit("usersInRoom", getUsersInRoom(userRoom));
-    socket.leave(room);
+
+    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room));  // was userRoom  !?  // also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
+    
 
     console.log(users);
     console.log(rooms);
@@ -244,7 +246,7 @@ io.on("connection", (socket) => {
     deleteUser(socket.client.id);
     getRooms();
 
-    console.log("user disconnected");
+    console.log("user disconnected" + getTime());
     console.log(users);
   });
 });
