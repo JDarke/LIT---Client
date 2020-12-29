@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = ({ view, typeText, handleChange, sendMessage }) => {
 
@@ -7,7 +9,7 @@ const Footer = ({ view, typeText, handleChange, sendMessage }) => {
             {view ==='chat' && (
                 <form className="messageForm" action="" onSubmit={(e) => e.preventDefault()}>
                     <input placeholder="Type a message" id="m" autoComplete="off" value={typeText} onChange={(e) => handleChange(e, 'typeText')} />
-                    <button onClick={() => sendMessage(typeText)}>Send</button>
+                    <button onClick={() => sendMessage(typeText)}><FontAwesomeIcon className="send" icon={faPlay}/></button>
                 </form>
             )}
         </div>

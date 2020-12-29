@@ -10,7 +10,7 @@ import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
 // import { useTransition, animated } from "react-spring";
 const ENDPOINT = process.env.PORT || "localhost:8080";
-const socket = io();
+const socket = io(ENDPOINT);
 
 const App = () => {
   //const [test, setTest] = useState('test');

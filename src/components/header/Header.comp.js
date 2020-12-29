@@ -8,7 +8,12 @@ const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom}) =>
     return view === 'chat' ? (  
         <div className="header">
             <FontAwesomeIcon icon={faArrowLeft} className="backLink" onClick={()=>navBack()}/>
-            <h2>{usersInRoom.map(user => <span>{user.name}</span>)}</h2>
+            <div className="headerInfo">
+                <h2>{room}</h2>
+                <div className="usersInRoom">{usersInRoom.map((user, i) => 
+                    <span>{user.name}{i !== (usersInRoom.length - 1) && ', ' }</span>
+                )}</div>
+            </div>
             <div className="typingInfo">{typing}</div>
             <FontAwesomeIcon icon={faBars} className="menuLink" onClick={()=>toggleMenu()}/>
         </div>

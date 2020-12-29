@@ -104,10 +104,9 @@ io.on('connection', (socket) => {
                     });
                     getRooms();
                     io.emit('roomInfo', rooms ); 
-                    getRooms();
-                    io.emit('usersInRoom', getUsersInRoom(userRoom));
+                    io.emit('usersInRoom', getUsersInRoom(room));
 
-                    
+
                     console.log(users);
                     console.log(rooms);
                     //console.log(io.sockets.adapter.rooms);
