@@ -3,9 +3,9 @@ import './header.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faBars } from "@fortawesome/free-solid-svg-icons";
 
-const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom}) => {
+const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom, location}) => {
 
-    return view === 'chat' ? (  
+    return location.pathname === '/chat' ? (  
         <div className="header">
             <FontAwesomeIcon icon={faArrowLeft} className="backLink" onClick={()=>navBack()}/>
             <div className="headerInfo">
@@ -19,7 +19,7 @@ const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom}) =>
         </div>
     ):(
         <div className="header">
-            {view === 'home' ? (
+            {location.pathname === '/' ? (
                <div className="backLink noPointer"/>
             ):(
                 <FontAwesomeIcon icon={faArrowLeft} className="backLink" onClick={()=>navBack()}/>
