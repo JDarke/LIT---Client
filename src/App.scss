@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
 
-$fontSizeSm: 16px;
+$fontSizeSm: 13px;
 $fontSizeLg: 16px;
 $messagePaddingSm: 5px 10px;
 $messagePaddingLg: 10px 15px;
@@ -258,7 +258,7 @@ ul {
     -ms-border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
     -o-border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
     padding: $messagePaddingSm;
-    margin-top: 20px;
+    margin-top: 5px;
     align-self: flex-start;
     //font-family:'Roboto', sans-serif;
     @media screen and(min-width: 768px) {
@@ -269,17 +269,27 @@ ul {
       -ms-border-radius: $msgBorderRadiusLg;
       -o-border-radius: $msgBorderRadiusLg;
     }
-    
+    .messageName {
+      //font-weight: bold;
+      font-size: .7em;
+    }
+    .messageText {
+      display: inline-block;
+    }
     .timeStamp {
       //position: absolute;
       font-size: .7em;
       opacity: .5;
-      align-self: flex-start;
-      text-align: left;
-      position: absolute;
+      //align-self: flex-start;
+      //text-align: left;
+      //position: absolute;
       font-weight: normal;
-      left: 2px;
-      bottom: -16px;
+      //left: 2px;
+      //bottom: -16px;
+      float: right;
+      position: relative;
+      top: 5px;
+      left: 5px;
     }
     &.message-user {
       align-self: flex-end;
@@ -290,10 +300,10 @@ ul {
       -ms-border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
       -o-border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
       .timeStamp {
-        align-self: flex-end;
-        text-align: right;
-        right: 2px;
-        left: unset;
+        //align-self: flex-end;
+        //text-align: right;
+        //right: 2px;
+        //left: 5px;
       }
     }
     &.message-admin {

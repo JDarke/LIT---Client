@@ -33,7 +33,7 @@ const getRooms = () => {
      users.forEach(user => {
          if (user.room) {
               let roomExists = rooms.indexOf(user.room);
-              if (roomExists == -1) {
+              if (roomExists === -1) {
                    rooms.push(user.room)
               }
          }
@@ -103,7 +103,7 @@ io.on('connection', (socket) => {
                          time: getTime()
                     });
                     getRooms();
-                    socket.broadcast.emit('roomInfo', rooms ); 
+                    io.emit('roomInfo', rooms ); 
 
                     console.log(users);
                     console.log(rooms);
@@ -112,24 +112,26 @@ io.on('connection', (socket) => {
           }
        });
 
-     socket.on('join', ({name, room}, roomNotFound) => {
-          let existingRoom = rooms.find(room => room === room) 
+     socket.on('join', ({name, userRoom}, roomNotFound) => {
+          let existingRoom = rooms.find(room => room === userRoom);
+          console.log(rooms)
+          console.log(userRoom)
           if (!existingRoom) {
                roomNotFound(true);
           } else {
                let user = getUser(name);
                if (user) {
                     roomNotFound(false);
-                    user.room = room;
-                    socket.join(room);
+                    user.room = userRoom;
+                    socket.join(userRoom);
                     socket.broadcast.emit('send_message', {
                          userName: 'admin',
-                         text: `${name} has joined ${room}`,
+                         text: `${name} has joined ${userRoom}`,
                          time: getTime()
                     });
                     io.to(user.id).emit('send_message', {
                          userName: 'admin',
-                         text: `Welcome to ${room}, ${name}!`,
+                         text: `Welcome to ${userRoom}, ${name}!`,
                          time: getTime()
                     });
                     getRooms();
@@ -151,7 +153,7 @@ io.on('connection', (socket) => {
                user.room = '';
           }
           getRooms();
-          socket.broadcast.emit('roomInfo', rooms ); 
+          io.emit('roomInfo', rooms ); 
           socket.leave(room);
 
           console.log(users);

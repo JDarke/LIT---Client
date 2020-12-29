@@ -4,10 +4,14 @@ const ChatWindow = ({ messages, messagesEndRef, name}) => {
     return (
             <ul id="messages">
                 {messages.map((msg, i) => (
-                    <div key={i} className={msg.userName === name ? 'message message-user' : msg.userName === 'admin' ? 'message message-admin' : "message"}>
-                        <li className={msg.userName}>{msg.text}</li>
-                        <div className="timeStamp">{msg.time}</div>
-                    </div>
+                    <li key={i} className={msg.userName === name ? 'message message-user' : msg.userName === 'admin' ? 'message message-admin' : "message"}>
+                        {(msg.userName !== name && msg.userName !== 'admin') && <div className="messageName">{msg.userName}</div>}
+                        <div className="messageText">
+                            {msg.text}
+                            <div className="timeStamp">{msg.time}</div>
+                        </div>
+                        
+                    </li>
                 ))}
                 {/* <div className="typing">{typing}</div> */}
                 <div ref={messagesEndRef} />
