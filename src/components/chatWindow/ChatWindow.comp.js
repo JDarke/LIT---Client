@@ -1,6 +1,7 @@
 import React from 'react';
 
 const ChatWindow = ({ messages, messagesEndRef, name}) => {
+    
     return (
             <ul id="messages">
                 {messages.map((msg, i) => (

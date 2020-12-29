@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-//import { BrowserRouter as Router, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+  withRouter,
+  useLocation
+} from "react-router-dom";
 import io from "socket.io-client";
 import "./App.scss";
 import ChatWindow from "./components/chatWindow/ChatWindow.comp";
@@ -9,12 +16,12 @@ import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
 import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
 // import { useTransition, animated } from "react-spring";
-//const ENDPOINT = process.env.PORT || "localhost:8080";
+const ENDPOINT = process.env.PORT || "localhost:8080";
 const socket = io();
 
-const App = () => {
+const App = ({ history }) => {
   //const [test, setTest] = useState('test');
-  
+  const history2 = useHistory();
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
   const [warnNameText, setWarnNameText] = useState("");
@@ -27,10 +34,36 @@ const App = () => {
   const [room, setRoom] = useState(joinRoomText);
   const [roomsList, setRoomsList] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
-  const [view, setView] = useState("home");
+  const [view, setView] = useState("createRoom");
   const [messages, setMessages] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
+  const location = useLocation();
+   // if (name === '' && location.pathname !== '/') {
+  //   history2.push('/');
+  // } 
+  useEffect(() => history.listen((location) => {
+    let path = location.pathname;
+    console.log(path);
+    console.log(history2);
+    // history2.splice(0, history2.length);
+
+    // if (path === '/rooms') {
+    //   history2.push('/', '/rooms')
+    //   console.log(history2);
+    // }
+    // if (name === '') {
+    //   history2.push('/');
+    // } else if (path === '/rooms') {
+    //   leaveRoom();
+    // }
+  }), [])
+
+  // useEffect(() => {
+  //   if (name === '' && location.pathname !== '/') {
+  //       history2.push('/');
+  //     } 
+  // }, [location, name]);
 
   const login = (chosenName) => {
     if (chosenName) {
@@ -40,6 +73,7 @@ const App = () => {
           setWarnNameText("Username in use");
         } else {
           setName(chosenName);
+          history2.push('/rooms');
           setView("createRoom");
         }
       });
@@ -65,6 +99,7 @@ const App = () => {
   const logout = () => {
     socket.emit("logout", {});
     setName("");
+    history2.push('/');
     setView("home");
   };
 
@@ -75,6 +110,7 @@ const App = () => {
           setWarnRoomText("Room does not exist");
         } else {
           setView("chat");
+          history2.push('/chat');
           setRoom(chosenRoom); // was ''
         }
       });
@@ -91,6 +127,7 @@ const App = () => {
             setWarnCreateRoomText("Room already exists");
           } else {
             setView("chat");
+            history2.push('/chat');
             setRoom(chosenRoom);
           }
         }
@@ -98,9 +135,12 @@ const App = () => {
     }
   };
 
-  const leaveRoom = () => {
+  const leaveRoom = (location) => {
     socket.emit("leave", { name, room });
     setView("joinRoom");
+    // if (location.pathname !== '/rooms') {
+       history2.push('/rooms');
+    // } 
     setMessages([]);
     setRoom("");
   };
@@ -205,7 +245,7 @@ const App = () => {
     if (view === "chat") {
       scrollToBottom();
     }
-  }, [messages, view]);
+  }, [messages]);
 
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
@@ -218,63 +258,67 @@ const App = () => {
       height: windowHeight
     }}>
       <div className="wrapper">
-        <Menu showMenu={showMenu} toggleMenu={toggleMenu} />
-        <Header
-          room={room}
-          name={name}
-          view={view}
-          typing={typing}
-          usersInRoom={usersInRoom}
-          navBack={navBack}
-          toggleMenu={toggleMenu}
-        />
-        <div className="innerWrapper">
-          {view === "home" && (
-            <Home
-              handleChange={handleChange}
-              nameText={nameText}
-              warnNameText={warnNameText}
-              login={login}
-            />
-          )}
-          {(view === "joinRoom" || view === "createRoom") && (
-            <SelectRoom
+        
+          <Menu showMenu={showMenu} toggleMenu={toggleMenu} />
+          <Header
+            room={room}
+            name={name}
+            view={view}
+            typing={typing}
+            usersInRoom={usersInRoom}
+            navBack={navBack}
+            toggleMenu={toggleMenu}
+          />
+          <div className="innerWrapper">
+            <Switch>
+              <Route exact path="/">
+                <Home
+                  handleChange={handleChange}
+                  nameText={nameText}
+                  warnNameText={warnNameText}
+                  login={login}
+                />
+              </Route>
+              <Route path="/rooms">
+                <SelectRoom
+                  view={view}
+                  handleChange={handleChange}
+                  handleRoomTab={handleRoomTab}
+                  createRoomText={createRoomText}
+                  warnCreateRoomText={warnCreateRoomText}
+                  warnJoinRoomText={warnJoinRoomText}
+                  joinRoomText={joinRoomText}
+                  joinRoom={joinRoom}
+                  createRoom={createRoom}
+                  roomsList={roomsList}
+                />
+              </Route>
+              <Route path="/chat">
+                  <ChatWindow
+                  messages={messages}
+                  messagesEndRef={messagesEndRef}
+                  typeText={typeText}
+                  handleChange={handleChange}
+                  sendMessage={sendMessage}
+                  name={name}
+                  typing={typing}
+                  setTypeText={setTypeText}
+                />
+              </Route>
+            </Switch>
+          </div>
+          {view === "chat" && (
+            <Footer
               view={view}
-              handleChange={handleChange}
-              handleRoomTab={handleRoomTab}
-              createRoomText={createRoomText}
-              warnCreateRoomText={warnCreateRoomText}
-              warnJoinRoomText={warnJoinRoomText}
-              joinRoomText={joinRoomText}
-              joinRoom={joinRoom}
-              createRoom={createRoom}
-              roomsList={roomsList}
-            />
-          )}
-           {view === "chat" && (
-              <ChatWindow
-              messages={messages}
-              messagesEndRef={messagesEndRef}
               typeText={typeText}
               handleChange={handleChange}
               sendMessage={sendMessage}
-              name={name}
-              typing={typing}
-              setTypeText={setTypeText}
             />
           )}
-        </div>
-        {view === "chat" && (
-          <Footer
-            view={view}
-            typeText={typeText}
-            handleChange={handleChange}
-            sendMessage={sendMessage}
-          />
-        )}
+        
       </div>
     </div>
   );
 };
 
-export default App;
+export default withRouter(App);
