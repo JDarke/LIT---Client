@@ -61,6 +61,15 @@ const getUser = (name) => {
   return user;
 };
 
+const getUserIndex = (name) => {
+
+
+     let index = users.findIndex(user => user.name === name)
+     return index;
+
+     
+};
+
 const getUsersInRoom = (room) => {
   let usersInRoom = [];
   users.forEach((user) => {
@@ -188,60 +197,69 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", ({ name, userRoom }, roomNotFound) => {
-    let existingRoom = rooms.find((room) => room === userRoom);
-    console.log(rooms);
-    console.log(userRoom);
-    if (!existingRoom) {
-      roomNotFound(true);
-    } else {
-      let user = getUser(name);
-      if (user) {
-        roomNotFound(false);
-        user.room = userRoom;
-        socket.join(userRoom);
-        socket.to(userRoom).emit("send_message", {
-          userName: "admin",
-          text: `${name} has joined ${userRoom}`,
-          time: getTime(),
-        });
-        io.to(user.id).emit("send_message", {
-          userName: "admin",
-          text: `Welcome to ${userRoom}, ${name}!`,
-          time: getTime(),
-        });
-        getRooms();
-        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
+     getRooms();
+     let existingRoom = rooms.find((room) => room === userRoom);
+     console.log(rooms);
+     console.log(userRoom);
+     if (!existingRoom) {
+          roomNotFound(true);
+     } else {
+          let user = getUser(name);
+          if (user) {
+          roomNotFound(false);
+          user.room = userRoom;
+          socket.join(userRoom);
+          socket.to(userRoom).emit("send_message", {
+               userName: "admin",
+               text: `${name} has joined ${userRoom}`,
+               time: getTime(),
+          });
+          io.to(user.id).emit("send_message", {
+               userName: "admin",
+               text: `Welcome to ${userRoom}, ${name}!`,
+               time: getTime(),
+          });
+          getRooms();
+          io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
 
-        console.log(users);
-        console.log(rooms);
-      }
-    }
+          console.log(users);
+          console.log(rooms);
+          }
+     }
   });
 
-  socket.on("leave", ({ name, room }) => {
-    socket.to(room).emit("send_message", {  //
-      userName: "admin",
-      text: `${name} has left the room`,
-      time: getTime(),
-    });
-    let user = getUser(name);
-    if (user) {
-      user.room = "";
-    }
-    socket.leave(room);
-    getRooms();
-    io.emit("roomInfo", rooms);
+     socket.on("leave", ({ name, room }) => {
+     socket.to(room).emit("send_message", {  //
+          userName: "admin",
+          text: `${name} has left the room`,
+          time: getTime(),
+     });
+     let user = getUser(name);
+     if (user) {
+          //  users = users.map(user => {
+          //      let updatedUser = user;
+          //      if (user.name === name) {
+          //           updatedUser.room = '';
+          //      } 
+          //      return updatedUser;
+          //  });
+          let index = getUserIndex(name);
+          users[index].room = '';        
+     }
+     socket.leave(room);
+     getRooms();
+     io.emit("roomInfo", rooms);
 
-    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room));  // was userRoom  !?  // also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
-    
+     io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room));  // was userRoom  !?  // FIXED also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
+     
 
-    console.log(users);
-    console.log(rooms);
-  });
+     console.log(users);
+     console.log(rooms);
+     });
 
   socket.on("logout", () => {
-    deleteUser(socket.client.id);
-    getRooms();
+    deleteUser(socket.client.id);  // need some kind of tidy-up here, surely?
+    getRooms();  
 
     console.log(users);
   });
