@@ -26,6 +26,7 @@ const App = () => {
   const [name, setName] = useState(nameText);
   const [room, setRoom] = useState(joinRoomText);
   const [roomsList, setRoomsList] = useState([]);
+  const [usersInRoom, setUsersInRoom] = useState([]);
   const [view, setView] = useState("home");
   const [messages, setMessages] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
@@ -179,6 +180,10 @@ const App = () => {
       setRoomsList(rooms);
     });
 
+    socket.on("usersInRoom", (roomUsers) => {
+      setUsersInRoom(roomUsers);
+    });
+
     socket.on("typing", (typingUserName) => {
       setTyping(typingUserName + " is typing...");
       setTimeout(() => {
@@ -188,6 +193,7 @@ const App = () => {
 
     return () => {
       socket.off("roomInfo");
+      socket.off("usersInRoom");
       socket.off("typing");
     };
   }, []);
@@ -218,6 +224,7 @@ const App = () => {
           name={name}
           view={view}
           typing={typing}
+          usersInRoom={usersInRoom}
           navBack={navBack}
           toggleMenu={toggleMenu}
         />

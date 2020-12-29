@@ -104,7 +104,10 @@ io.on('connection', (socket) => {
                     });
                     getRooms();
                     io.emit('roomInfo', rooms ); 
+                    getRooms();
+                    io.emit('usersInRoom', getUsersInRoom(userRoom));
 
+                    
                     console.log(users);
                     console.log(rooms);
                     //console.log(io.sockets.adapter.rooms);
@@ -135,6 +138,7 @@ io.on('connection', (socket) => {
                          time: getTime()
                     });
                     getRooms();
+                    io.emit('usersInRoom', getUsersInRoom(userRoom));
                     
                     console.log(users);
                     console.log(rooms)
@@ -154,6 +158,7 @@ io.on('connection', (socket) => {
           }
           getRooms();
           io.emit('roomInfo', rooms ); 
+          io.emit('usersInRoom', getUsersInRoom(userRoom));
           socket.leave(room);
 
           console.log(users);
