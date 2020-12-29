@@ -40,6 +40,9 @@ const App = () => {
   const messagesEndRef = useRef(null);
   const location = useLocation();
 
+
+  // add useEffect to fire on disconnect, i.e - when socket changes...?
+
   useEffect( () =>
       history.listen((newLocation, action) => {
         let path = location.pathname;
