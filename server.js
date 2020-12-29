@@ -157,24 +157,24 @@ io.on("connection", (socket) => {
     console.log(users);
   });
 
-  socket.on("create", ({ name, room }, roomNameIsTaken) => {
-    let existingRoom = rooms.find((room) => room === room);
+  socket.on("create", ({ name, userRoom }, roomNameIsTaken) => {
+    let existingRoom = rooms.find((room) => room === userRoom);
     if (existingRoom) {
       roomNameIsTaken(true);
     } else {
       let user = getUser(name);
       if (user) {
         roomNameIsTaken(false);
-        user.room = room;
-        socket.join(room);
-        io.sockets.in(room).emit("send_message", {
+        user.room = userRoom;
+        socket.join(userRoom);
+        io.sockets.in(userRoom).emit("send_message", {
           userName: "admin",
-          text: `${name} created new room - ${room}!`,
+          text: `${name} created new room - ${userRoom}!`,
           time: getTime(),
         });
         getRooms();
         io.emit("roomInfo", rooms);
-        io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room));
+        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
 
         console.log(users);
         console.log(rooms);
@@ -215,7 +215,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave", ({ name, room }) => {
-    socket.broadcast.emit("send_message", {
+    socket.broadcast.emit("send_message", {  // this should also be room-targeted
       userName: "admin",
       text: `${name} has left the room`,
       time: getTime(),

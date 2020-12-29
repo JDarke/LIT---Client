@@ -135,7 +135,7 @@ const App = () => {
     if (chosenRoom) {
       socket.emit(
         "create",
-        { name: name, room: chosenRoom },
+        { name: name, userRoom: chosenRoom },
         (roomNameIsTaken) => {
           if (roomNameIsTaken) {
             setWarnCreateRoomText("Room already exists");
