@@ -17,13 +17,13 @@ const users = [];
 let rooms = [];
 
 // const getData = async (url, data) => {
-     //const response = 
-     // fetch('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json', {
-     //      method: 'GET', 
-     //      mode: 'cors',
-     //    }).then(res => res.json()).then(data => console.log(data));
-        //console.log(response);
-        //return response;
+//const response =
+// fetch('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json', {
+//      method: 'GET',
+//      mode: 'cors',
+//    }).then(res => res.json()).then(data => console.log(data));
+//console.log(response);
+//return response;
 // }
 //getData('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json')
 //console.log(x);
@@ -61,13 +61,14 @@ const getUser = (name) => {
   return user;
 };
 
+const getUserById = (id) => {
+  let user = users.find((user) => user.id === id);
+  return user;
+};
+
 const getUserIndex = (name) => {
-
-
-     let index = users.findIndex(user => user.name === name)
-     return index;
-
-     
+  let index = users.findIndex((user) => user.name === name);
+  return index;
 };
 
 const getUsersInRoom = (room) => {
@@ -81,10 +82,15 @@ const getUsersInRoom = (room) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("user connected: " + socket.client.id + ' ' + getTime());
+  console.log("user connected: " + socket.client.id + " " + getTime());
   getRooms();
 
   // do we need to ping the room info to users on connection?  Is it currently being done only when entering rooms? --fix - see above
+
+
+// TO FIX:  A created room on the pc didnt appear on my phone app list, and when I created a room with the same name, it joined to the room.  it allowed create action, but actually joined.  Need to update room info better/sooner, and trace the create/join overlap.
+
+
 
   socket.on("send_message", (msg) => {
     console.log(msg.userName + ": " + msg.text);
@@ -164,7 +170,7 @@ io.on("connection", (socket) => {
     } else {
       addUser(name, socket.client.id, "");
       getRooms();
-      io.to(socket.client.id).emit("roomInfo", rooms);  //  isnt this it??
+      io.to(socket.client.id).emit("roomInfo", rooms); //  isnt this it??
       nameIsTaken(false);
     }
     console.log(users);
@@ -197,78 +203,96 @@ io.on("connection", (socket) => {
   });
 
   socket.on("join", ({ name, userRoom }, roomNotFound) => {
-     getRooms();
-     let existingRoom = rooms.find((room) => room === userRoom);
-     console.log(rooms);
-     console.log(userRoom);
-     if (!existingRoom) {
-          roomNotFound(true);
-     } else {
-          let user = getUser(name);
-          if (user) {
-          roomNotFound(false);
-          user.room = userRoom;
-          socket.join(userRoom);
-          socket.to(userRoom).emit("send_message", {
-               userName: "admin",
-               text: `${name} has joined ${userRoom}`,
-               time: getTime(),
-          });
-          io.to(user.id).emit("send_message", {
-               userName: "admin",
-               text: `Welcome to ${userRoom}, ${name}!`,
-               time: getTime(),
-          });
-          getRooms();
-          io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
+    getRooms();
+    let existingRoom = rooms.find((room) => room === userRoom);
+    console.log(rooms);
+    console.log(userRoom);
+    if (!existingRoom) {
+      roomNotFound(true);
+    } else {
+      let user = getUser(name);
+      if (user) {
+        roomNotFound(false);
+        user.room = userRoom;
+        socket.join(userRoom);
+        socket.to(userRoom).emit("send_message", {
+          userName: "admin",
+          text: `${name} has joined ${userRoom}`,
+          time: getTime(),
+        });
+        io.to(user.id).emit("send_message", {
+          userName: "admin",
+          text: `Welcome to ${userRoom}, ${name}!`,
+          time: getTime(),
+        });
+        getRooms();
+        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
 
-          console.log(users);
-          console.log(rooms);
-          }
-     }
+        console.log(users);
+        console.log(rooms);
+      }
+    }
   });
 
-     socket.on("leave", ({ name, room }) => {
-     socket.to(room).emit("send_message", {  //
-          userName: "admin",
-          text: `${name} has left the room`,
-          time: getTime(),
-     });
-     let user = getUser(name);
-     if (user) {
-          //  users = users.map(user => {
-          //      let updatedUser = user;
-          //      if (user.name === name) {
-          //           updatedUser.room = '';
-          //      } 
-          //      return updatedUser;
-          //  });
-          let index = getUserIndex(name);
-          users[index].room = '';        
-     }
-     socket.leave(room);
-     getRooms();
-     io.emit("roomInfo", rooms);
+  socket.on("leave", ({ name, room }) => {
+    socket.to(room).emit("send_message", {
+      //
+      userName: "admin",
+      text: `${name} has left the room`,
+      time: getTime(),
+    });
+    let user = getUser(name);
+    if (user) {
+      //  users = users.map(user => {
+      //      let updatedUser = user;
+      //      if (user.name === name) {
+      //           updatedUser.room = '';
+      //      }
+      //      return updatedUser;
+      //  });
+      let index = getUserIndex(name);
+      users[index].room = "";
+    }
+    socket.leave(room);
+    getRooms();
+    io.emit("roomInfo", rooms);
 
-     io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room));  // was userRoom  !?  // FIXED also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
-     
+    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room)); // was userRoom  !?  // FIXED also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
 
-     console.log(users);
-     console.log(rooms);
-     });
+    console.log(users);
+    console.log(rooms);
+  });
 
   socket.on("logout", () => {
-    deleteUser(socket.client.id);  // need some kind of tidy-up here, surely?
-    getRooms();  
+    deleteUser(socket.client.id); // need some kind of tidy-up here, surely?
+    getRooms();
 
     console.log(users);
   });
 
   socket.on("disconnect", () => {
-    deleteUser(socket.client.id);
+    //deleteUser(socket.client.id);
+    //getRooms();
+    
+    console.log("user disconnected" + getTime());
+    console.log(users);
+  });
+
+  socket.on("reconnect", () => {
+    let user = getUserById(socket.client.id);
+    if (user.room !== '') {
+      socket.join(user.room);
+      socket.to(userRoom).emit("send_message", {
+          userName: "admin",
+          text: `${user.name} has re-joined ${user.room}`,
+          time: getTime(),
+      });
+      socket.emit('rejoin', user.room);
+    }
+      
     getRooms();
 
-    console.log("user disconnected" + getTime());
+    console.log("user reconnected" + getTime());
     console.log(users);
   });
 });
