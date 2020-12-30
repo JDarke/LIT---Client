@@ -89,7 +89,7 @@ const App = () => {
           setName(chosenName);
           history.push("/rooms");
           setView("createRoom");
-          console.log("Logged in. Name: " + name + '. Room: ' + room);
+          console.log("Logged in. Name: " + chosenName + '. Room: ' + room);
         }
       });
     }
@@ -149,6 +149,7 @@ const App = () => {
             setView("chat");
             history.push("/chat");
             setRoom(chosenRoom);
+            console.log("Create room. Name: " + name + '. Room: ' + chosenRoom );
           }
         }
       );
@@ -236,7 +237,7 @@ const App = () => {
     if (txt) {
       const message = new Message(txt);
       socket.emit("send_message", message);
-      console.log("Msgsent. Name: " + name + '. Room: ' + room + '. Msg: ' + message);
+      console.log("Msgsent. Name: " + name + '. Room: ' + room + '. Msg: ', message);
       setTypeText("");
     }
   };
@@ -247,14 +248,17 @@ const App = () => {
 
 
   useEffect(() => {
+
+
+
     socket.on("roomInfo", (rooms) => {
       setRoomsList(rooms);
-      console.log('receive roominfo: ' + rooms);
+      console.log('receive roominfo: ', rooms);
     });
 
     socket.on("usersInRoom", (roomUsers) => {
       setUsersInRoom(roomUsers);
-      console.log('receive usersinroominfo: ' + roomUsers);
+      console.log('receive usersinroominfo: ', roomUsers);
     });
 
     socket.on("typing", (typingUserName) => {
@@ -279,7 +283,11 @@ const App = () => {
       // info about the required rooms (if its not as simple as my 
       // example) could easily be reached via a DB connection. It worth it.
       console.log("Connect. Name: " + name + '. Room: ' + room );
-      joinRoom(room);
+      if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
+        logout();
+      } 
+    
+      //joinRoom(room);
     });
 
     return () => {
@@ -301,6 +309,8 @@ const App = () => {
       scrollToBottom();
     }
   }, [messages, location]);
+
+  
 
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
