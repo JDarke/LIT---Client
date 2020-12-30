@@ -88,6 +88,10 @@ const getUsersInRoom = (room) => {
 
 io.on("connection", (socket) => {
   console.log("user connected: " + socket.client.id + " " + getTime());
+  io.clients((error, clients) => {
+    if (error) throw error;
+    console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
+  });
   getRooms();
 
   // do we need to ping the room info to users on connection?  Is it currently being done only when entering rooms? --fix - see above
@@ -305,7 +309,10 @@ io.on("connection", (socket) => {
   socket.on("disconnect", (reason) => {
 
     console.log('User 1 disconnected because ' + reason);
-
+    io.clients((error, clients) => {
+      if (error) throw error;
+      console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
+    });
     let user = getUserById(socket.client.id);
     if (user) {
       if (user.room !== '') {
