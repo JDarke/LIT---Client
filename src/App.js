@@ -257,10 +257,31 @@ const App = () => {
       }, 2000);
     });
 
+    socket.on("disconnect", function() {
+      console.log("Disconnected");
+    });
+    
+    socket.on("reconnect", function() {
+      // do not rejoin from here, since the socket.id token and/or rooms are still
+      // not available.
+      console.log("Reconnecting");
+    });
+    
+    socket.on("connect", function() {
+      // thats the key line, now register to the room you want.
+      // info about the required rooms (if its not as simple as my 
+      // example) could easily be reached via a DB connection. It worth it.
+      console.log("Connect");
+      joinRoom(room);
+    });
+
     return () => {
       socket.off("roomInfo");
       socket.off("usersInRoom");
       socket.off("typing");
+      socket.off("disconnect");
+      socket.off("reconnect");
+      socket.off("connect");
     };
   }, []);
 
