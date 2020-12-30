@@ -17,8 +17,8 @@ import Menu from "./components/menu/Menu.comp";
 // import { useTransition, animated } from "react-spring";
 //const ENDPOINT = process.env.PORT || "localhost:8080";
 const socket = io();
-io.eio.pingTimeout = 100000; // 2 minutes
-io.eio.pingInterval = 30000; 
+// io.eio.pingTimeout = 100000; // 2 minutes
+// io.eio.pingInterval = 30000; 
 
 const App = () => {
   //const [test, setTest] = useState('test');
@@ -305,6 +305,7 @@ const App = () => {
 
   // useEffect(() => {
   //   if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
+    // console.log(location.pathname, name, room)
   //     logout();
   //   } 
   // }, [name, room, location, logout]);
