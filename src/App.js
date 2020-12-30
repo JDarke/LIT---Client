@@ -285,7 +285,7 @@ const App = () => {
       console.log("Connect. Name: " + name + '. Room: ' + room );
       if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
         logout();
-      } 
+      }
     
       //joinRoom(room);
     });
@@ -299,7 +299,13 @@ const App = () => {
       socket.off("connect");
     };
   }, []);
+  
 
+  useEffect(() => {
+    if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
+      logout();
+    } 
+  }, [name, room, location, logout]);
 
   useEffect(() => {
     socket.once("send_message", function (msg) {
