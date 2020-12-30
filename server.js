@@ -93,8 +93,9 @@ io.on("connection", (socket) => {
 
 
   socket.on("send_message", (msg) => {
-    console.log(msg.userName + ": " + msg.text);
+    
     let user = getUser(msg.userName);
+    console.log(msg.userName + " to " + user.room + ': ' + msg.text );
     if (user) {
       if (msg.lit) {
         let newMsg = msg;
@@ -156,7 +157,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", (name) => {
-    console.log(name + " is typing...");
+    //console.log(name + " is typing...");
     let user = getUser(name);
     if (user) {
       socket.to(user.room).emit("typing", name);
@@ -172,8 +173,10 @@ io.on("connection", (socket) => {
       getRooms();
       io.to(socket.client.id).emit("roomInfo", rooms); //  isnt this it??
       nameIsTaken(false);
+      console.log(name + " logged in");
     }
-    console.log(users);
+    
+    console.log('users: ' + users);
   });
 
   socket.on("create", ({ name, userRoom }, roomNameIsTaken) => {
@@ -194,9 +197,9 @@ io.on("connection", (socket) => {
         getRooms();
         io.emit("roomInfo", rooms);
         io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
-
-        console.log(users);
-        console.log(rooms);
+        console.log(name +  " created " + userRoom);
+        console.log("users: " + users);
+        console.log("rooms: " + rooms);
         //console.log(io.sockets.adapter.rooms);
       }
     }
@@ -205,8 +208,8 @@ io.on("connection", (socket) => {
   socket.on("join", ({ name, userRoom }, roomNotFound) => {
     getRooms();
     let existingRoom = rooms.find((room) => room === userRoom);
-    console.log(rooms);
-    console.log(userRoom);
+    //console.log("rooms: " + rooms);
+    
     if (!existingRoom) {
       roomNotFound(true);
     } else {
@@ -227,9 +230,9 @@ io.on("connection", (socket) => {
         });
         getRooms();
         io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
-
-        console.log(users);
-        console.log(rooms);
+        console.log(name +  " joined " + userRoom);
+        console.log("users: " + users);
+        console.log("rooms: " + rooms);
       }
     }
   });
@@ -258,16 +261,17 @@ io.on("connection", (socket) => {
     io.emit("roomInfo", rooms);
 
     io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room)); // was userRoom  !?  // FIXED also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
-
-    console.log(users);
-    console.log(rooms);
+    console.log(name +  " left " + room);
+    console.log("users: " + users);
+    console.log("rooms: " + rooms);
   });
 
   socket.on("logout", () => {
+    let user = getUserById(socket.client.id);
+    console.log( user.name +  " logged out");
     deleteUser(socket.client.id); // need some kind of tidy-up here, surely?
+    console.log("users: " + users);
     getRooms();
-
-    console.log(users);
   });
 
   socket.on("disconnect", () => {
@@ -275,7 +279,8 @@ io.on("connection", (socket) => {
     //getRooms();
 
     console.log("user disconnected" + getTime());
-    console.log(users);
+    console.log("users: " + users);
+    console.log("rooms: " + rooms);
   });
 
   socket.on("reconnect", () => {
@@ -292,8 +297,8 @@ io.on("connection", (socket) => {
       
     getRooms();
 
-    console.log("user reconnected" + getTime());
-    console.log(users);
+    console.log(user.name + "reconnected" + getTime());
+    console.log("users: " + users);
   });
 });
 
