@@ -268,8 +268,8 @@ const App = () => {
       }, 2000);
     });
 
-    socket.on("disconnect", function() {
-      console.log("Disconnected");
+    socket.on("disconnect", function(reason) {
+      console.log('User disconnected because ' + reason);
     });
     
     socket.on("reconnect", function() {

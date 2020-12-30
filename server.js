@@ -302,7 +302,10 @@ io.on("connection", (socket) => {
     
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason) => {
+
+    console.log('User 1 disconnected because ' + reason);
+
     let user = getUserById(socket.client.id);
     if (user) {
       if (user.room !== '') {
