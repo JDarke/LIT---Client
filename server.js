@@ -13,6 +13,8 @@ const getTime = () => {
   return d.toLocaleTimeString().slice(0, -3);
 };
 
+io.eio.pingTimeout = 100000; // 2 minutes
+io.eio.pingInterval = 30000; 
 const users = [];
 let rooms = [];
 
