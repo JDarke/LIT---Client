@@ -89,6 +89,7 @@ const App = () => {
           setName(chosenName);
           history.push("/rooms");
           setView("createRoom");
+          console.log("Logged in. Name: " + name + '. Room: ' + room);
         }
       });
     }
@@ -114,6 +115,7 @@ const App = () => {
     setName("");
     history.push("/");
     setView("home");
+    console.log("Logged out.");
   };
 
   const joinRoom = (chosenRoom) => {
@@ -128,6 +130,7 @@ const App = () => {
             setView("chat");
             history.push("/chat");
             setRoom(chosenRoom); // was ''
+            console.log("Join. Name: " + name + '. Room: ' + chosenRoom );
           }
         }
       );
@@ -154,6 +157,7 @@ const App = () => {
 
   const leaveRoom = (location) => {
     socket.emit("leave", { name, room });
+    console.log("Leave room. Name: " + name + '. Room: ' + room );
     setView("joinRoom");
     // if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
     history.push("/rooms");
@@ -232,6 +236,7 @@ const App = () => {
     if (txt) {
       const message = new Message(txt);
       socket.emit("send_message", message);
+      console.log("Msgsent. Name: " + name + '. Room: ' + room + '. Msg: ' + message);
       setTypeText("");
     }
   };
@@ -244,10 +249,12 @@ const App = () => {
   useEffect(() => {
     socket.on("roomInfo", (rooms) => {
       setRoomsList(rooms);
+      console.log('receive roominfo: ' + rooms);
     });
 
     socket.on("usersInRoom", (roomUsers) => {
       setUsersInRoom(roomUsers);
+      console.log('receive usersinroominfo: ' + roomUsers);
     });
 
     socket.on("typing", (typingUserName) => {
@@ -271,7 +278,7 @@ const App = () => {
       // thats the key line, now register to the room you want.
       // info about the required rooms (if its not as simple as my 
       // example) could easily be reached via a DB connection. It worth it.
-      console.log("Connect");
+      console.log("Connect. Name: " + name + '. Room: ' + room );
       joinRoom(room);
     });
 
