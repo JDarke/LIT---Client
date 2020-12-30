@@ -273,7 +273,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     //deleteUser(socket.client.id);
     //getRooms();
-    
+
     console.log("user disconnected" + getTime());
     console.log(users);
   });
@@ -282,7 +282,7 @@ io.on("connection", (socket) => {
     let user = getUserById(socket.client.id);
     if (user.room !== '') {
       socket.join(user.room);
-      socket.to(userRoom).emit("send_message", {
+      socket.to(user.room).emit("send_message", {
           userName: "admin",
           text: `${user.name} has re-joined ${user.room}`,
           time: getTime(),
