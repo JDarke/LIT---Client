@@ -304,6 +304,8 @@ io.on("connection", (socket) => {
         });
         console.log('retreiving: ' + user.id + ' ' + user.room)
       }
+      getRooms();
+      io.emit("roomInfo", rooms);
       console.log('users: ', users)
       retrieveUser(user);
     }
