@@ -166,6 +166,7 @@ module.exports.listen = function (io, socket) {
     let user = getUserByToken(token);
     if (user) {
       user.id = socket.client.id;
+      user.isOnline = true;
       if (user.room) {
         socket.join(user.room);
         socket.to(user.room).emit("send_message", {
@@ -186,6 +187,7 @@ module.exports.listen = function (io, socket) {
       io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));
       console.log("users: ", users);
       retrieveUser(user);
+
     } else {
         console.log('user not found - logging out') // add a status message to the login screen giving reason for return where needed
         io.to(socket.client.id).emit("logout");
@@ -279,7 +281,7 @@ module.exports.listen = function (io, socket) {
 
 
 
-  socket.on("reconnect", () => {
+  socket.on("reconnect", () => {  // whole section may be redundant.
     let user = getUserById(socket.client.id);
     if (user.room !== "") {
       socket.join(user.room);
@@ -292,7 +294,7 @@ module.exports.listen = function (io, socket) {
     }
     getRooms();
     io.emit("roomInfo", rooms);
-
+    //io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));  
     console.log(user.name + "reconnected" + getTime());
     console.log("users: ", users);
   });
