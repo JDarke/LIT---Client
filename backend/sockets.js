@@ -16,7 +16,7 @@ let users = getUsers();
 let rooms = getRooms();
 
 module.exports.listen = function (io, socket) {
-    
+
   socket.on("send_message", (msg) => {
     let user = getUser(msg.userName);
     //console.log(msg.userName + " to " + user.room + ': ' + msg.text );
@@ -66,34 +66,10 @@ module.exports.listen = function (io, socket) {
         io.sockets.in(user.room).emit("send_message", msg);
       }
     } else {
-      console.log("No user");
+      console.log("No user"); // emit an event here to tell client to go back to login screen...?
     }
   });
 
-
-
-  socket.on("lit-mode", (litModeActive, name, room) => {
-    console.log(name + " " + room);
-    if (name && room) {
-      let txt = litModeActive ? "activated" : "deactivated";
-      io.sockets.in(room).emit("send_message", {
-        userName: "admin",
-        text: `${name} ${txt} LIT mode!`,
-        time: getTime(),
-      });
-      //io.sockets.in(room).emit('lit-mode', litModeActive) // for translate-everyone mode
-    }
-  });
-
-
-
-  socket.on("typing", (name) => {
-    //console.log(name + " is typing...");
-    let user = getUser(name);
-    if (user) {
-      socket.to(user.room).emit("typing", name);
-    }
-  });
 
 
 
@@ -217,7 +193,6 @@ module.exports.listen = function (io, socket) {
     let user = getUser(name);
     if (user) {
       socket.to(room).emit("send_message", {
-        //
         userName: "admin",
         text: `${name} has left the room`,
         time: getTime(),
@@ -245,7 +220,7 @@ module.exports.listen = function (io, socket) {
         socket.to(user.room).emit("send_message", {
           //
           userName: "admin",
-          text: `${user.name} has left the room2`,
+          text: `${user.name} has logged out`,
           time: getTime(),
         });
         let index = getUserIndex(user.name);
@@ -278,7 +253,6 @@ module.exports.listen = function (io, socket) {
       user.isOnline = false;
       if (user.room !== "") {
         socket.to(user.room).emit("send_message", {
-          //
           userName: "admin",
           text: `${user.name} has disconnected`,
           time: getTime(),
@@ -314,4 +288,30 @@ module.exports.listen = function (io, socket) {
     console.log(user.name + "reconnected" + getTime());
     console.log("users: ", users);
   });
+
+  
+  socket.on("lit-mode", (litModeActive, name, room) => {
+    console.log(name + " " + room);
+    if (name && room) {
+      let txt = litModeActive ? "activated" : "deactivated";
+      io.sockets.in(room).emit("send_message", {
+        userName: "admin",
+        text: `${name} ${txt} LIT mode!`,
+        time: getTime(),
+      });
+      //io.sockets.in(room).emit('lit-mode', litModeActive) // for translate-everyone mode
+    }
+  });
+
+
+
+  socket.on("typing", (name) => {
+    //console.log(name + " is typing...");
+    let user = getUser(name);
+    if (user) {
+      socket.to(user.room).emit("typing", name);
+    }
+  });
+
+
 };

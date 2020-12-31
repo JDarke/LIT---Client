@@ -276,7 +276,7 @@ const App = () => {
 
     socket.on("usersInRoom", (roomUsers) => {
       setUsersInRoom(roomUsers);
-      console.log('receive usersinroominfo: ', roomUsers);
+      console.log('receive usersinroom info: ', roomUsers);
     });
 
     socket.on("typing", (typingUserName) => {
@@ -307,7 +307,13 @@ const App = () => {
         setRoom(room);
         console.log('retrieved user name and room: ' + name + ', ' + room);
         //joinRoom(room);
-        
+        if (name && room) {
+          history.push("/chat");
+        } else if (name) {
+          history.push("/rooms");  // put a useEffect in the rooms component to monitor and update as needed.
+        } else {
+          history.push("/");
+        }
       });
       // if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
       //   logout();

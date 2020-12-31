@@ -47,7 +47,7 @@ io.on("connection", (socket) => {
     if (error) throw error;
     console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
   });
-  getRooms();
+  //getRooms();
 
   require("./backend/sockets").listen(io, socket);
 
