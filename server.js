@@ -105,7 +105,7 @@ const getUserIndex = (name) => {
 const getUsersInRoom = (room) => {
   let usersInRoom = [];
   users.forEach((user) => {
-    if (user.room === room) {
+    if (user.room === room && user.isOnline) {
       usersInRoom.push(user);
     }
   });
@@ -294,12 +294,12 @@ io.on("connection", (socket) => {
         socket.join(user.room);
         socket.to(user.room).emit("send_message", {
           userName: "admin",
-          text: `${user.name} has joined ${user.room}`,
+          text: `${user.name} has reconnected`,
           time: getTime(),
         }); 
         io.to(user.id).emit("send_message", {
           userName: "admin",
-          text: `Rejoined ${user.room}`,
+          text: `Reconnected to ${user.room}`,
           time: getTime(),
         });
         console.log('retreiving: ' + user.id + ' ' + user.room)
@@ -378,26 +378,26 @@ io.on("connection", (socket) => {
     });
     let user = getUserById(socket.client.id);
     if (user) {
+      user.isOnline = false;
       if (user.room !== '') {
         socket.to(user.room).emit("send_message", {
           //
           userName: "admin",
-          text: `${user.name} has left the room`,
+          text: `${user.name} has disconnected`,
           time: getTime(),
         });
         //console.log(getUsersInRoom(user.room));
-        let index = getUserIndex(user.name);
+        //let index = getUserIndex(user.name);
         //console.log('Index: ' + index);
-        let prevRoom = user.room;
+        //let prevRoom = user.room;
         //users[index].room = "";
         //console.log('userRoom: ' + user.room);
         //console.log('tempRoom: ' + tempRoom);
         //console.log('getUsers: ', getUsersInRoom(user.room));
-        io.sockets.in(prevRoom).emit("usersInRoom", getUsersInRoom(prevRoom));
-        socket.leave(prevRoom); 
-        
+        io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));
+        socket.leave(user.room); 
       }
-      user.isOnline = false;
+      
       //deleteUser(socket.client.id);
     }
     
