@@ -180,13 +180,14 @@ module.exports.listen = function (io, socket) {
         });
         console.log("retreiving: " + user.id + " " + user.room);
       }
+      socket.join(user.room);  //////////////////////// may need moving
       getRooms();
       io.emit("roomInfo", rooms);
       io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));
       console.log("users: ", users);
       retrieveUser(user);
     } else {
-        console.log('user not found - logging out')
+        console.log('user not found - logging out') // add a status message to the login screen giving reason for return where needed
         io.to(socket.client.id).emit("logout");
     }
   });
@@ -208,7 +209,7 @@ module.exports.listen = function (io, socket) {
     getRooms();
     io.emit("roomInfo", rooms);
 
-    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room)); // was userRoom  !?  // FIXED also, shouldnt this only be sent to that room?  This seems to broadcast to all rooms and may overwrite their lists
+    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room)); 
     console.log(name + " left " + room);
     console.log("users: ", users);
     console.log("rooms: ", rooms);
@@ -261,7 +262,7 @@ module.exports.listen = function (io, socket) {
           text: `${user.name} has disconnected`,
           time: getTime(),
         });
-        io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));
+        io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));   // replace updates like this with named functions like "updateUsersinRoom"
         socket.leave(user.room);
       }
     }
