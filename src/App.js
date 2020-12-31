@@ -322,6 +322,10 @@ const App = () => {
       //joinRoom(room);
     });
 
+    socket.on('logout', function() {
+      logout();
+    });
+
     return () => {
       socket.off("token");
       socket.off("roomInfo");

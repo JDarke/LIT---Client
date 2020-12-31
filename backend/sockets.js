@@ -182,8 +182,12 @@ module.exports.listen = function (io, socket) {
       }
       getRooms();
       io.emit("roomInfo", rooms);
+      io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));
       console.log("users: ", users);
       retrieveUser(user);
+    } else {
+        console.log('user not found - logging out')
+        io.to(socket.client.id).emit("logout");
     }
   });
 
