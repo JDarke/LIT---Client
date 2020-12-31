@@ -249,13 +249,16 @@ module.exports.listen = function (io, socket) {
 
   socket.on("disconnect", (reason) => {
     console.log("User 1 disconnected because " + reason);
+    console.log('socket.client.id', socket.client.id);
     io.clients((error, clients) => {
       if (error) throw error;
       console.log(clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
     });
     let user = getUserById(socket.client.id);
+    console.log('user', user);
     if (user) {
       user.isOnline = false;
+      console.log('user.room: ' + user.room);
       if (user.room !== "") {
         socket.to(user.room).emit("send_message", {
           userName: "admin",
