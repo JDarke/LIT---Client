@@ -13,6 +13,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "cors": "^2.8.5",
+    "eslint": "^7.16.0",
     "express": "^4.17.1",
     "font-awesome": "^4.7.0",
     "google-translate-api": "^2.3.0",
@@ -45,7 +46,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:react-hooks/recommended"
     ]
   },
   "browserslist": {
@@ -60,5 +62,8 @@
       "last 1 safari version"
     ],
     "author": "John Darke"
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^4.2.0"
   }
 }

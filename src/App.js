@@ -47,6 +47,7 @@ const App = () => {
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const location = useLocation();
+  let userToken = localStorage.getItem("token");
 
 
   // add useEffect to fire on disconnect, i.e - when socket changes...?
@@ -89,7 +90,8 @@ const App = () => {
 
   const login = (chosenName) => {
     if (chosenName) {
-      socket.emit("login", chosenName, (nameIsTaken) => {
+      let token = localStorage.getItem("token");
+      socket.emit("login", chosenName, token, function nameIsTaken(nameIsTaken) {
         if (nameIsTaken) {
           //console.log('Username in use');
           setWarnNameText("Username in use");
@@ -227,7 +229,8 @@ const App = () => {
         return;
     }
   };
-
+  
+  
   const getTime = () => {
     let d = new Date();
     return d.toLocaleTimeString().slice(0, -3);
@@ -256,8 +259,10 @@ const App = () => {
 
 
   useEffect(() => {
-
-
+    socket.on("token", (token) => {
+      localStorage.setItem("token", token);
+      console.log('receive token: ', token);
+    });
 
     socket.on("roomInfo", (rooms) => {
       setRoomsList(rooms);
@@ -291,14 +296,23 @@ const App = () => {
       // info about the required rooms (if its not as simple as my 
       // example) could easily be reached via a DB connection. It worth it.
       console.log("Connect. Name: " + name + '. Room: ' + room );
-      if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
-        logout();
-      }
+      console.log(userToken);
+      socket.emit('retrieveUser', userToken, function retrieveUser({name, room}) {
+        setName(name);
+        setRoom(room);
+        console.log('retrieved user name and room: ' + name + ', ' + room)
+        //joinRoom(room);
+        
+      });
+      // if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
+      //   logout();
+      // }
     
       //joinRoom(room);
     });
 
     return () => {
+      socket.off("token");
       socket.off("roomInfo");
       socket.off("usersInRoom");
       socket.off("typing");

@@ -18,6 +18,19 @@ io.eio.pingInterval = 30000;
 const users = [];
 let rooms = [];
 
+
+
+// Make one "update data" function/source?  It can send only the changed info, but should be a single function.
+
+// currently not destroying actual socket rooms, so re creating with same name room actually joins an existing one.  This should have tidy up actions when rooms array is modified.
+
+
+// use simple auth token to allow reconnects? Math.random(1 - 100) ...see WWM.   Maybe store it in localstorage for client..?
+// store users even after disconnect;  add an 'isOnline' prop to users, along with token, and then they can reconnect easily.  If they reconnect and have a room prop, they go back to chat, else back to rooms.  Or poss have the login screen say 'Hi Dave' if already logged in, with a continue button and a Chnage User link.
+//  Each time the server is fired up, user info should persist for as long as the session, even if users log out and back in.
+
+// ref https://hackernoon.com/enforcing-a-single-web-socket-connection-per-user-with-node-js-socket-io-and-redis-65f9eb57f66a
+
 // const getData = async (url, data) => {
 //const response =
 // fetch('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json', {
@@ -30,9 +43,15 @@ let rooms = [];
 //getData('https://words.bighugelabs.com/api/2/8e1da03335ab50e9e051ab2b746e7e57/happy/json')
 //console.log(x);
 
+const createToken = () => {
+  let token = Math.random(1 - 100).toString();
+  return token;
+}
+
 const addUser = (name, id, room) => {
   // if (!users.find(user => user.name === name)) {
-  users.push({ name, id, room });
+  users.push({ name, id, room, token: createToken(), isOnline: true });
+
   // }
 };
 
@@ -72,6 +91,11 @@ const getUserById = (id) => {
   let user = users.find((user) => user.id === id);
   return user;
 };
+
+const getUserByToken = (token) => {
+  let user = users.find((user) => user.token === token);
+  return user;
+}
 
 const getUserIndex = (name) => {
   let index = users.findIndex((user) => user.name === name);
@@ -178,14 +202,25 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("login", (name, nameIsTaken) => {
+  socket.on("login", (name, token, nameIsTaken) => {
     let existingUser = getUser(name);
     if (existingUser) {
-      nameIsTaken(true);
+      console.log(existingUser.token, token)
+      if (existingUser.token != token) {
+        nameIsTaken(true);
+      } else {
+        // handle re-assign user to new socket // what about same token, diff name?
+        existingUser.id = socket.client.id;
+        existingUser.isOnline = true;
+        nameIsTaken(false);
+      }
+      
     } else {
       addUser(name, socket.client.id, "");
+      let user = getUser(name)
       getRooms();
       io.to(socket.client.id).emit("roomInfo", rooms); //  isnt this it??
+      io.to(socket.client.id).emit("token", user.token);
       nameIsTaken(false);
       console.log(name + " logged in");
     }
@@ -251,6 +286,21 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on('retrieveUser', (token, retrieveUser) => {
+    let user = getUserByToken(token);
+    if (user) {
+      if (user.room) {
+        socket.join(user.room);
+        socket.to(user.room).emit("send_message", {
+          userName: "admin",
+          text: `${user.name} has joined ${user.room}`,
+          time: getTime(),
+        }); 
+      }
+      retrieveUser(user);
+    }
+  })
+
   socket.on("leave", ({ name, room }) => {
     
     let user = getUser(name);
@@ -300,7 +350,8 @@ io.on("connection", (socket) => {
       }
       
       console.log( user.name +  " logged out");
-      deleteUser(socket.client.id); // need some kind of tidy-up here, surely?
+      //deleteUser(socket.client.id); // need some kind of tidy-up here, surely?
+      user.isOnline = false;
       console.log("users:", ...users);
       getRooms();
     }
@@ -328,7 +379,7 @@ io.on("connection", (socket) => {
         let index = getUserIndex(user.name);
         //console.log('Index: ' + index);
         let prevRoom = user.room;
-        users[index].room = "";
+        //users[index].room = "";
         //console.log('userRoom: ' + user.room);
         //console.log('tempRoom: ' + tempRoom);
         //console.log('getUsers: ', getUsersInRoom(user.room));
@@ -336,7 +387,8 @@ io.on("connection", (socket) => {
         socket.leave(prevRoom); 
         
       }
-      deleteUser(socket.client.id);
+      user.isOnline = false;
+      //deleteUser(socket.client.id);
     }
     
     getRooms();
