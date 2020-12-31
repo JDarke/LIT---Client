@@ -3,6 +3,7 @@ import React from "react";
 const SelectRoom = ({
   createRoomText,
   joinRoomText,
+  handleClickRoom,
   warnJoinRoomText,
   warnCreateRoomText,
   createRoom,
@@ -11,6 +12,7 @@ const SelectRoom = ({
   handleRoomTab,
   roomsList,
   view,
+  name
 }) => {
   return (
     <div className="pageWrapper">
@@ -66,9 +68,9 @@ const SelectRoom = ({
                     </form>
                     <br />
                     <h4>Public Rooms:</h4>
-                    <ul style={{ marginTop: "-5px" }}>
+                    <ul className="publicRoomsList" style={{ marginTop: "-5px" }}>
                         {roomsList.length > 0 ? (
-                        roomsList.map((room, i) => <li key={i}>{room}</li>)
+                        roomsList.map((room, i) => <li className="publicRoom" onClick={() => handleClickRoom(room) } key={i}>{room}</li>)
                         ) : (
                         <li>No public rooms are active</li>
                         )}

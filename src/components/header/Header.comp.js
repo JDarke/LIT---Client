@@ -11,7 +11,7 @@ const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom, loc
             <div className="headerInfo">
                 <h2>{room}</h2>
                 <div className="usersInRoom">{usersInRoom.map((user, i) => 
-                    <span>{user.name}{i !== (usersInRoom.length - 1) && ', ' }</span>
+                    <span key={i}>{user.name}{i !== (usersInRoom.length - 1) && ', ' }</span>
                 )}</div>
             </div>
             <div className="typingInfo">{typing}</div>
@@ -23,8 +23,11 @@ const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom, loc
                <div className="backLink noPointer"/>
             ):(
                 <FontAwesomeIcon icon={faArrowLeft} className="backLink" onClick={()=>navBack()}/>
+                
             )}
-            <h2>LIT Chat</h2>
+            {location.pathname === '/rooms' ? <h2>{name}</h2> : <h2>L.I.T Chat</h2>}
+            
+            {/* {!name && <h2></h2>} */}
             <FontAwesomeIcon icon={faBars} className="menuLink" onClick={()=>toggleMenu()}/>
         </div>
     )

@@ -201,6 +201,10 @@ ul {
           text-decoration: none;
       }
     }
+    input[type='checkbox'] {
+      position: relative;
+      top: 1px;
+    }
     span { 
       text-align: center;
     }
@@ -215,6 +219,7 @@ ul {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  overflow-y: scroll;
   p {
     width: 72%;
   }
@@ -397,7 +402,39 @@ ul {
   font-size: .8em;
   opacity: .7;
 }
+.userPic {
 
+  //padding: 0 10px;
+  min-width: 150px;
+  max-width: 150px;
+  min-height: 150px;
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  background:#3498db42;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+
+
+.userPic div {
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.publicRoomsList {
+  li {
+    padding: 3px 10px;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    margin: 5px;
+  }
+
+}
 
 .menu {
   //padding: 18px; 

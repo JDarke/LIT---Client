@@ -16,8 +16,8 @@ const Menu = ({ view, roomInfo, name, showMenu, toggleMenu, litMode, toggleLitMo
                     <ul>
                         <li><h3>Menu</h3></li>
                         <li onClick={()=>toggleLitMode()}>Translation mode: {litMode ? 'On' : 'Off'}</li>
-                        <li>Room Info</li>
-                        <li>Exit</li>
+                        {/* <li>Room Info</li>
+                        <li>Exit</li> */}
                     </ul>   
                 </animated.div>
     )    

@@ -15,7 +15,9 @@ import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
 import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
 // import { useTransition, animated } from "react-spring";
-//const ENDPOINT = process.env.PORT || "localhost:8080";
+const ENDPOINT = process.env.PORT || "localhost:8080";
+const socket = io(ENDPOINT); //x10
+/*
 const socket = io({
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -23,6 +25,8 @@ const socket = io({
   reconnectionDelayMax: 5000,
   randomizationFactor: 0.5,
   timeout: 30000}); //x10
+
+  */
 // io.eio.pingTimeout = 100000; // 2 minutes
 // io.eio.pingInterval = 30000; 
 
@@ -341,7 +345,10 @@ const App = () => {
   }, [messages, location]);
 
   
-
+  const handleClickRoom = (txt) => {
+    setJoinRoomText(txt);
+    if (warnJoinRoomText !== "") setWarnRoomText("");
+  }
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
   //   enter: { transform: "translateX(0)" },
@@ -380,12 +387,14 @@ const App = () => {
             <Route path="/rooms">
               <SelectRoom
                 view={view}
+                name={name}
                 handleChange={handleChange}
                 handleRoomTab={handleRoomTab}
                 createRoomText={createRoomText}
                 warnCreateRoomText={warnCreateRoomText}
                 warnJoinRoomText={warnJoinRoomText}
                 joinRoomText={joinRoomText}
+                handleClickRoom={handleClickRoom}
                 joinRoom={joinRoom}
                 createRoom={createRoom}
                 roomsList={roomsList}
