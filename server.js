@@ -49,13 +49,10 @@ io.on("connection", (socket) => {
   });
   getRooms();
 
-  // do we need to ping the room info to users on connection?  Is it currently being done only when entering rooms? --fix - see above
-
+  require("./backend/sockets").listen(io, socket);
 
 // TO FIX:  A created room on the pc didnt appear on my phone app list, and when I created a room with the same name, it joined to the room.  it allowed create action, but actually joined.  Need to update room info better/sooner, and trace the create/join overlap.
 
-
-  require("./backend/sockets").listen(io, socket);
   
 });
 
