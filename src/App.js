@@ -300,7 +300,7 @@ const App = () => {
       socket.emit('retrieveUser', userToken, function retrieveUser({name, room}) {
         setName(name);
         setRoom(room);
-        console.log('retrieved user name and room: ' + name + ', ' + room)
+        console.log('retrieved user name and room: ' + name + ', ' + room);
         //joinRoom(room);
         
       });

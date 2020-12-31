@@ -296,6 +296,11 @@ io.on("connection", (socket) => {
           text: `${user.name} has joined ${user.room}`,
           time: getTime(),
         }); 
+        io.to(user.id).emit("send_message", {
+          userName: "admin",
+          text: `Rejoined ${user.room}`,
+          time: getTime(),
+        });
       }
       retrieveUser(user);
     }
