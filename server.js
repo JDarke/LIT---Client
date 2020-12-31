@@ -289,6 +289,7 @@ io.on("connection", (socket) => {
   socket.on('retrieveUser', (token, retrieveUser) => {
     let user = getUserByToken(token);
     if (user) {
+      user.id = socket.client.id;
       if (user.room) {
         socket.join(user.room);
         socket.to(user.room).emit("send_message", {
@@ -301,6 +302,7 @@ io.on("connection", (socket) => {
           text: `Rejoined ${user.room}`,
           time: getTime(),
         });
+        console.log('retreiving: ' + user.id + ' ' + user.room)
       }
       retrieveUser(user);
     }
