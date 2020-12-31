@@ -22,7 +22,7 @@ const socket = io({
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
   randomizationFactor: 0.5,
-  timeout: 300000});
+  timeout: 30000});
 // io.eio.pingTimeout = 100000; // 2 minutes
 // io.eio.pingInterval = 30000; 
 
@@ -47,7 +47,7 @@ const App = () => {
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const location = useLocation();
-  let userToken = localStorage.getItem("token");
+  let userToken = () => localStorage.getItem("token");
 
 
   // add useEffect to fire on disconnect, i.e - when socket changes...?
@@ -296,8 +296,8 @@ const App = () => {
       // info about the required rooms (if its not as simple as my 
       // example) could easily be reached via a DB connection. It worth it.
       console.log("Connect. Name: " + name + '. Room: ' + room );
-      console.log(userToken);
-      socket.emit('retrieveUser', userToken, function retrieveUser({name, room}) {
+      console.log(userToken());
+      socket.emit('retrieveUser', userToken(), function retrieveUser({name, room}) {
         setName(name);
         setRoom(room);
         console.log('retrieved user name and room: ' + name + ', ' + room);
