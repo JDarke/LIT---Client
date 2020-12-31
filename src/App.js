@@ -22,7 +22,7 @@ const socket = io({
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
   randomizationFactor: 0.5,
-  timeout: 30000});
+  timeout: 30000}); //x10
 // io.eio.pingTimeout = 100000; // 2 minutes
 // io.eio.pingInterval = 30000; 
 
@@ -262,6 +262,7 @@ const App = () => {
     socket.on("token", (token) => {
       localStorage.setItem("token", token);
       console.log('receive token: ', token);
+      console.log('userToken: ', userToken());
     });
 
     socket.on("roomInfo", (rooms) => {

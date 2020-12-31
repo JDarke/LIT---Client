@@ -13,7 +13,7 @@ const getTime = () => {
   return d.toLocaleTimeString().slice(0, -3);
 };
 
-io.eio.pingTimeout = 100000; // 2 minutes
+io.eio.pingTimeout = 10000; // x10
 io.eio.pingInterval = 30000; 
 const users = [];
 let rooms = [];
@@ -304,6 +304,7 @@ io.on("connection", (socket) => {
         });
         console.log('retreiving: ' + user.id + ' ' + user.room)
       }
+      console.log('users: ', users)
       retrieveUser(user);
     }
   })
