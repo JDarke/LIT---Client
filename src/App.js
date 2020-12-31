@@ -30,7 +30,7 @@ const socket = io({
 // io.eio.pingTimeout = 100000; // 2 minutes
 // io.eio.pingInterval = 30000; 
 
-const App = () => {
+const App = () => {   // store messages in localstorage through refresh, not after logout
   //const [test, setTest] = useState('test');
   const history = useHistory();
   const [typeText, setTypeText] = useState("");
@@ -95,7 +95,7 @@ const App = () => {
   const login = (chosenName) => {
     if (chosenName) {
       let token = localStorage.getItem("token");
-      socket.emit("login", chosenName, token, function nameIsTaken(nameIsTaken) {
+      socket.emit("login", chosenName, token, (nameIsTaken) => {
         if (nameIsTaken) {
           //console.log('Username in use');
           setWarnNameText("Username in use");
