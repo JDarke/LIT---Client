@@ -315,10 +315,14 @@ const App = () => {   // store messages in localstorage through refresh, not aft
         setRoom(room);
         console.log('retrieved user name and room: ' + name + ', ' + room);
         //joinRoom(room);
-        if ((name && room) && (location.pathname !== '/chat')) {
-          history.push("/chat");
-        } else if (name && (location.pathname !== '/rooms')) {
-          history.push("/rooms");  // put a useEffect in the rooms component to monitor and update as needed.
+        if (name && room) {
+          if (location.pathname !== '/chat') {
+            history.push("/chat");
+          }
+        } else if (name) {
+          if (location.pathname !== '/rooms') {
+            history.push("/rooms"); 
+          }                               // put a useEffect in the rooms component to monitor and update as needed.
         } else if (location.pathname !== '/') {
           history.push("/");
         }
@@ -344,6 +348,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       socket.off("disconnect");
       socket.off("reconnect");
       socket.off("connect");
+      socket.off("logout");
     };
   }, []);
   
