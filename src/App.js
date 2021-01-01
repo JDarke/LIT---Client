@@ -183,7 +183,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     setRoom("");
   };
 
-
+ 
   useEffect(() =>{
    
   }, [])
@@ -301,6 +301,9 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     socket.on("reconnect", function() {
       // do not rejoin from here, since the socket.id token and/or rooms are still
       // not available.
+
+
+      // add a reconnecting message and disable input durring reconnect!!!!!!
       console.log("Reconnecting");
     });
     
