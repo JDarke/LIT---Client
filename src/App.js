@@ -172,13 +172,13 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     }
   };
 
-  const leaveRoom = (location) => {
+  const leaveRoom = () => {
     socket.emit("leave", { name, room });
     console.log("Leave room. Name: " + name + '. Room: ' + room );
     setView("joinRoom");
-    // if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
-    history.push("/rooms");
-    // }
+     //if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
+        history.push("/rooms");
+     //}
     //setMessages([]);
     setRoom("");
   };
@@ -189,10 +189,10 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   }, [])
 
   const navBack = () => {
-    if (view === "chat") {
+    if (location.pathname === '/chat') {
       leaveRoom();
       //history.push('/rooms');
-    } else if (view === "createRoom" || view === "joinRoom") {
+    } else if (location.pathname === '/rooms') {
       logout();
     }
   };
