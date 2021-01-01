@@ -265,18 +265,17 @@ ul {
     list-style: none;
     text-align: left;
     //font-weight: bold;
-    max-width: 80%;
     background: rgb(237, 237, 237);
-    border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
-    -webkit-border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
-    -moz-border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
-    -ms-border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
-    -o-border-radius: $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm 0;
+    border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+    -webkit-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+    -moz-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+    -ms-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+    -o-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
     padding: $messagePaddingSm;
     margin-top: 5px;
     align-self: flex-start;
     //font-family:'Roboto', sans-serif;
-    @media screen and(min-width: 768px) {
+    @media screen and (min-width: 768px) {
       padding: $messagePaddingLg;
       border-radius: $msgBorderRadiusLg;
       -webkit-border-radius: $msgBorderRadiusLg;
@@ -319,12 +318,12 @@ ul {
     &.message-user {
       align-self: flex-end;
       background: rgb(202, 239, 255);
-      border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
-      -webkit-border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
-      -moz-border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
-      -ms-border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
-      -o-border-radius:  $msgBorderRadiusSm  $msgBorderRadiusSm 0  $msgBorderRadiusSm;
-      .timeStamp {
+      border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+      -webkit-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+      -moz-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+      -ms-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+      -o-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+      .timeStamp{
         //align-self: flex-end;
         //text-align: right;
         //right: 2px;
@@ -333,9 +332,10 @@ ul {
     }
     &.message-admin {
       padding: 10px;
-      margin-left: 0.5em;margin-right: 0;
+      //margin-left: 0.5em;
+      margin-right: 0;
       text-align: center;
-      width: 100%;
+      //width: 100%;
       color: #aaa;
       background: none;
       font-weight: normal;
