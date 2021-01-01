@@ -15,16 +15,17 @@ import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
 import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
 // import { useTransition, animated } from "react-spring";
-//const ENDPOINT = process.env.PORT || "localhost:8080";
+const ENDPOINT = process.env.PORT || "localhost:8080";
 //const socket = io(ENDPOINT); //x10
 
-const socket = io({
+const socket = io(ENDPOINT/*{
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
   randomizationFactor: 0.5,
-  timeout: 30000}); //x10
+  timeout: 30000
+}*/); //x10
 
   
 // io.eio.pingTimeout = 100000; // 2 minutes
@@ -297,7 +298,11 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     });
 
     socket.on("usersInRoom", (roomUsers) => {
-      setUsersInRoom(roomUsers);
+      setUsersInRoom(roomUsers.map(user => {
+        // user.color = usersInRoom[usersInRoom.indexOf(user)].color || "test";
+        user.color = user.color || "test";
+        return user;
+      }));
       console.log('receive usersinroom info: ', roomUsers);
     });
 

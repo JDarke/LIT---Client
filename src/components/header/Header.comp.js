@@ -10,8 +10,8 @@ const Header = ({room, name, view, navBack, toggleMenu, typing, usersInRoom, loc
             <FontAwesomeIcon icon={faArrowLeft} className="backLink" onClick={()=>navBack()}/>
             <div className="headerInfo">
                 <h2>{room}</h2>
-                <div className="usersInRoom">{usersInRoom.map((user, i) => 
-                    <span key={i}>{user.name}{i !== (usersInRoom.length - 1) && ', ' }</span>
+                <div className="usersInRoom">You{usersInRoom.map((user, i) => 
+                    user.name !== name && <span key={i}>{', ' + user.name}</span>
                 )}</div>
             </div>
             <div className="typingInfo">{typing}</div>

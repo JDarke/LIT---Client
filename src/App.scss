@@ -287,7 +287,17 @@ ul {
     .messageName {
       //font-weight: bold;
       font-size: .7em;
-    }
+      position: absolute;
+      background: rgba(255,255,255, 0.6);
+      box-shadow: -1px 1px 3px rgba(0,0,0,.3);
+      padding: 0 4px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      vertical-align: bottom;
+      top: -8px;
+      left: 0;
+      }
     .messageText {
       display: inline-block;
     }
