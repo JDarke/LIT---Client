@@ -46,7 +46,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   const [roomsList, setRoomsList] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [view, setView] = useState("createRoom");
-  const [messages, setMessages] = useState([]);
+  
   const [litMode, setLitMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
@@ -55,17 +55,18 @@ const App = () => {   // store messages in localstorage through refresh, not aft
 
   const getLocalMessages = () => {
     let m = localStorage.getItem("messages");
+    if (!m) {
+      m = "[]";
+    }
     return JSON.parse(m);
   }
-
+  
   const setLocalMessages = (j) => {
     let m = JSON.stringify(j);
     localStorage.setItem("messages", m);
   }
 
-  const clearLocalMessages = () => {
-    setLocalMessages('');
-  }
+  const [messages, setMessages] = useState(getLocalMessages());
   // add useEffect to fire on disconnect, i.e - when socket changes...?
 
   useEffect( () =>
@@ -140,7 +141,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     socket.emit("logout", {});
     setName('');
     setMessages([]);
-    clearLocalMessages();
+     setLocalMessages('');
     setRoom('');
     history.push("/");
     setView("home");
@@ -329,7 +330,9 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       socket.emit('retrieveUser', userToken(), function retrieveUser({name, room}) {
         setName(name);
         setRoom(room);
-        setMessages(getLocalMessages());
+        var b = getLocalMessages();
+        console.log('b: ', b);
+        setMessages(b);
         console.log('retrieved user name and room: ' + name + ', ' + room);
         //joinRoom(room);
         if (name && room) {
@@ -381,8 +384,9 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   useEffect(() => {
     socket.once("send_message", function (msg) {
       setMessages([...messages, msg]);
+      setLocalMessages([...messages, msg]);
     });
-    setLocalMessages(messages);
+    
     //console.log(getLocalMessages());
     console.log(messages);
   }, [messages]);
