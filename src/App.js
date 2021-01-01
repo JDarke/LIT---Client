@@ -177,7 +177,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     // if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
     history.push("/rooms");
     // }
-    setMessages([]);
+    //setMessages([]);
     setRoom("");
   };
 
@@ -245,6 +245,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     this.text = text;
     this.time = getTime();
     this.lit = litMode;
+    this.room = room;
     //return {userName: name, text: msg, time: time}
   }
 
@@ -352,6 +353,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     if (location.pathname === "/chat") {
       scrollToBottom();
     }
+    console.log(messages);
   }, [messages, location]);
 
   
@@ -412,6 +414,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
             </Route>
             <Route path="/chat">
               <ChatWindow
+                room={room}
                 messages={messages}
                 messagesEndRef={messagesEndRef}
                 typeText={typeText}

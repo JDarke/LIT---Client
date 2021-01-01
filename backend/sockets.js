@@ -21,7 +21,7 @@ module.exports.listen = function (io, socket) {
     let user = getUser(msg.userName);
     //console.log(msg.userName + " to " + user.room + ': ' + msg.text );
     if (user) {
-      console.log(msg.userName + " to " + user.room + ": " + msg.text);
+      console.log(msg.userName + " to " + msg.room + ": " + msg.text);
       if (msg.lit) {
         let newMsg = msg;
         translate(msg.text, {
@@ -116,6 +116,7 @@ module.exports.listen = function (io, socket) {
           userName: "admin",
           text: `${name} created new room - ${userRoom}!`,
           time: getTime(),
+          room: userRoom
         });
         getRooms();
         io.emit("roomInfo", rooms);
@@ -147,11 +148,13 @@ module.exports.listen = function (io, socket) {
           userName: "admin",
           text: `${name} has joined ${userRoom}`,
           time: getTime(),
+          room: userRoom
         });
         io.to(user.id).emit("send_message", {
           userName: "admin",
           text: `Welcome to ${userRoom}, ${name}!`,
           time: getTime(),
+          room: userRoom
         });
         //getRooms();
         io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
@@ -175,11 +178,13 @@ module.exports.listen = function (io, socket) {
           userName: "admin",
           text: `${user.name} has reconnected`,
           time: getTime(),
+          room: user.room
         });
         io.to(user.id).emit("send_message", {
           userName: "admin",
           text: `Reconnected to ${user.room}`,
           time: getTime(),
+          room: user.room
         });
         console.log("retreiving: " + user.id + " " + user.room);
       }
@@ -205,6 +210,7 @@ module.exports.listen = function (io, socket) {
         userName: "admin",
         text: `${name} has left the room`,
         time: getTime(),
+        room: room
       });
       let index = getUserIndex(name);
       users[index].room = "";
@@ -231,6 +237,7 @@ module.exports.listen = function (io, socket) {
           userName: "admin",
           text: `${user.name} has logged out`,
           time: getTime(),
+          room: user.room
         });
         let index = getUserIndex(user.name);
         let prevRoom = user.room;
@@ -268,6 +275,7 @@ module.exports.listen = function (io, socket) {
           userName: "admin",
           text: `${user.name} has disconnected`,
           time: getTime(),
+          room: user.room
         });
         io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));   // replace updates like this with named functions like "updateUsersinRoom"
         socket.leave(user.room);
@@ -291,6 +299,7 @@ module.exports.listen = function (io, socket) {
         userName: "admin",
         text: `${user.name} has re-connected ${user.room}`,
         time: getTime(),
+        room: user.room
       });
       socket.emit("rejoin", user.room);
     }
@@ -310,6 +319,7 @@ module.exports.listen = function (io, socket) {
         userName: "admin",
         text: `${name} ${txt} LIT mode!`,
         time: getTime(),
+        room: room
       });
       //io.sockets.in(room).emit('lit-mode', litModeActive) // for translate-everyone mode
     }
