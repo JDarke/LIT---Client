@@ -75,6 +75,7 @@ module.exports.listen = function (io, socket) {
 
   socket.on("login", (name, token, nameIsTaken) => {
     let existingUser = getUser(name);
+    console.log('nameIsTaken: ', nameIsTaken)
     if (existingUser) {
       //console.log(existingUser.token, token);
       console.log('nameIsTaken: ', nameIsTaken);
