@@ -18,7 +18,7 @@ import Menu from "./components/menu/Menu.comp";
 const ENDPOINT = process.env.PORT || "localhost:8080";
 //const socket = io(ENDPOINT); //x10
 
-const socket = io(ENDPOINT/*{
+const socket = io(/*{
   reconnection: true,
   reconnectionAttempts: Infinity,
   reconnectionDelay: 1000,
