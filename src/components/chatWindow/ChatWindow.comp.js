@@ -7,7 +7,7 @@ const ChatWindow = ({ messages, messagesEndRef, name, room}) => {
                 {messages.map((msg, i) => (
                      msg.room === room &&
                     (<li key={i} className={msg.userName === name ? 'message message-user' : msg.userName === 'admin' ? 'message message-admin' : "message"}>
-                        {(msg.userName !== name && msg.userName !== 'admin') && <div className="messageName">{msg.userName}</div>}
+                        {(msg.userName !== name && msg.userName !== 'admin' && msg.userName !== messages[i-1].userName) && <div className="messageName">{msg.userName}</div>}
                         <div className="messageText">
                             {msg.text}
                             <div className="timeStamp">{msg.time}</div>
