@@ -76,7 +76,8 @@ module.exports.listen = function (io, socket) {
   socket.on("login", (name, token, nameIsTaken) => {
     let existingUser = getUser(name);
     if (existingUser) {
-      console.log(existingUser.token, token);
+      //console.log(existingUser.token, token);
+      console.log('nameIsTaken: ', nameIsTaken);
       if (existingUser.token != token) {
         nameIsTaken(true);
       } else {
@@ -91,7 +92,7 @@ module.exports.listen = function (io, socket) {
       getRooms();
       io.to(socket.client.id).emit("roomInfo", rooms); //  isnt this it??
       io.to(socket.client.id).emit("token", user.token);
-      nameIsTaken(false);
+      nameIsTaken(false);  // app crashed here, with maneIsTaken is not a func.
       console.log(name + " logged in");
     }
 
@@ -189,7 +190,7 @@ module.exports.listen = function (io, socket) {
       retrieveUser(user);
 
     } else {
-        console.log('user not found - logging out') // add a status message to the login screen giving reason for return where needed
+        console.log('user not found - logging out') // notify client to reset their localstorage token? and add a status message to the login screen giving reason for return where needed
         io.to(socket.client.id).emit("logout");
     }
   });
