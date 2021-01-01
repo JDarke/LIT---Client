@@ -185,14 +185,8 @@ const App = () => {   // store messages in localstorage through refresh, not aft
 
 
   useEffect(() =>{
-    if ((name && room) && (location.pathname !== '/chat')) {
-      history.push("/chat");
-    } else if (name && (location.pathname !== '/rooms')) {
-      history.push("/rooms");  // put a useEffect in the rooms component to monitor and update as needed.
-    } else if (location.pathname !== '/') {
-      history.push("/");
-    }
-  }, [room, name, history, location])
+   
+  }, [])
 
   const navBack = () => {
     if (view === "chat") {
@@ -321,7 +315,13 @@ const App = () => {   // store messages in localstorage through refresh, not aft
         setRoom(room);
         console.log('retrieved user name and room: ' + name + ', ' + room);
         //joinRoom(room);
-       
+        if ((name && room) && (location.pathname !== '/chat')) {
+          history.push("/chat");
+        } else if (name && (location.pathname !== '/rooms')) {
+          history.push("/rooms");  // put a useEffect in the rooms component to monitor and update as needed.
+        } else if (location.pathname !== '/') {
+          history.push("/");
+        }
       });
       // if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
       //   logout();
@@ -333,6 +333,8 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     socket.on('logout', function() {
       logout();
     });
+
+  
 
     return () => {
       socket.off("token");
