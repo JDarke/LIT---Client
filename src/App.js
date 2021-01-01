@@ -53,7 +53,19 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   const location = useLocation();
   let userToken = () => localStorage.getItem("token");
 
+  const getLocalMessages = () => {
+    let m = localStorage.getItem("messages");
+    return JSON.parse(m);
+  }
 
+  const setLocalMessages = (j) => {
+    let m = JSON.stringify(j);
+    localStorage.setItem("messages", m);
+  }
+
+  const clearLocalMessages = () => {
+    setLocalMessages('');
+  }
   // add useEffect to fire on disconnect, i.e - when socket changes...?
 
   useEffect( () =>
@@ -128,6 +140,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     socket.emit("logout", {});
     setName('');
     setMessages([]);
+    clearLocalMessages();
     setRoom('');
     history.push("/");
     setView("home");
@@ -316,6 +329,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       socket.emit('retrieveUser', userToken(), function retrieveUser({name, room}) {
         setName(name);
         setRoom(room);
+        setMessages(getLocalMessages());
         console.log('retrieved user name and room: ' + name + ', ' + room);
         //joinRoom(room);
         if (name && room) {
@@ -328,6 +342,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
           }                               // put a useEffect in the rooms component to monitor and update as needed.
         } else if (location.pathname !== '/') {
           history.push("/");
+          // should this also call logout?
         }
       });
       // if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
@@ -367,12 +382,16 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     socket.once("send_message", function (msg) {
       setMessages([...messages, msg]);
     });
+    setLocalMessages(messages);
+    //console.log(getLocalMessages());
+    console.log(messages);
+  }, [messages]);
+
+  useEffect(() => {
     if (location.pathname === "/chat") {
       scrollToBottom();
     }
-    console.log(messages);
   }, [messages, location]);
-
   
   const handleClickRoom = (txt) => {
     setJoinRoomText(txt);
