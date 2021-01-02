@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
 
 $fontSizeSm: 14px;
 $fontSizeLg: 16px;
@@ -108,6 +108,7 @@ ul {
   height: 100%;
 }
 
+
 .header {
   height: 72px;
   padding: 0 1em;
@@ -132,6 +133,10 @@ ul {
   h2, h3 {
     margin: 0;
     width: 100%;
+    font-weight: 900;
+  }
+  h2 {
+    //font-weight: 900;
   }
   .backLink, 
   .menuLink {
@@ -228,6 +233,10 @@ ul {
     padding-left: 1em;
     padding-right: 1em;
   }
+  h4 {
+   font-weight: 700;
+  }
+  
 }
 
 .selectRoomTabs {
@@ -243,7 +252,7 @@ ul {
     user-select: none;
     &.active {
       cursor: unset;
-      font-weight: bold;
+      font-weight: 700;
       background: white;
     }
   }
@@ -285,6 +294,7 @@ ul {
     }
     .messageName {
       //font-weight: bold;
+      font-weight: 500;
       font-size: .8em; //0.9
       position: absolute;
       background: rgba(255,255,255, 1);
@@ -296,7 +306,7 @@ ul {
       vertical-align: bottom;
       top: -11px;  //-14px
       left: 0;
-   
+
       }
     .messageText {
       display: inline-block;

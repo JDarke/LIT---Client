@@ -28,7 +28,7 @@ const socket = io(/*{
 }*/); //x10
 
 const colors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
-const colors2 = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
+const colors2 = ['blue', 'orange', 'green', 'yellow',  'indigo', 'red', 'violet']
   
 // io.eio.pingTimeout = 100000; // 2 minutes
 // io.eio.pingInterval = 30000; 
