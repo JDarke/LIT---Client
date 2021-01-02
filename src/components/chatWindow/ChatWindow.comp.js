@@ -6,7 +6,7 @@ const ChatWindow = ({ messages, messagesEndRef, name, room, userColors}) => {
             <ul id="messages">
                 {messages.map((msg, i) => (
                     msg.room === room &&
-                    (<li key={i} className={msg.userName === name ? 'message message-user' : msg.userName === 'admin' ? 'message message-admin' : "message "} style={(msg.userName !== 'admin' && msg.userName !== messages[i-1].userName) ? {marginTop: 20 + 'px'} : {}}>
+                    (<li key={i} className={msg.userName === name ? 'message message-user' : msg.userName === 'admin' ? 'message message-admin' : "message "} style={(msg.userName !== 'admin' && msg.userName !== messages[i-1].userName && messages[i-1].userName !== 'admin') ? {marginTop: 20 + 'px'} : {}}>
                         {
                             (msg.userName !== name && msg.userName !== 'admin' && msg.userName !== messages[i-1].userName) && 
                             <div style={{color: userColors[msg.userName]}} className={"messageName"}>
