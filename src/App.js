@@ -164,6 +164,8 @@ const App = () => {   // store messages in localstorage through refresh, not aft
             setView("chat");
             history.push("/chat");
             setRoom(chosenRoom); // was ''
+            setWarnJoinRoomText('');
+            setJoinRoomText('');
             console.log("Join. Name: " + name + '. Room: ' + chosenRoom );
           }
         }
@@ -183,6 +185,8 @@ const App = () => {   // store messages in localstorage through refresh, not aft
             setView("chat");
             history.push("/chat");
             setRoom(chosenRoom);
+            setWarnCreateRoomText('');
+            setCreateRoomText('');
             console.log("Create room. Name: " + name + '. Room: ' + chosenRoom );
           }
         }
@@ -436,7 +440,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   
   const handleClickRoom = (txt) => {
     setJoinRoomText(txt);
-    //if (warnJoinRoomText !== "") setWarnJoinRoomText("");
+    if (warnJoinRoomText !== "") setWarnJoinRoomText("");
   }
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },

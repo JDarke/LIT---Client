@@ -170,7 +170,7 @@ ul {
   .warnText {
     position: relative;
     color: rgb(220, 77, 11);
-    height: 25px;
+    min-height: 25px;
   }
   .loginForm {
     //margin-top: 2em;
@@ -332,6 +332,7 @@ ul {
       }
     }
     &.message-admin {
+      font-size: .85em;
       padding: 10px;
       //margin-left: 0.5em;
       margin-right: 0;
@@ -349,6 +350,7 @@ ul {
       -ms-border-radius: 0;
       -o-border-radius: 0;
       .timeStamp {
+        font-size: .85em;
         align-self: center;
         text-align: center;
         right: unset;
