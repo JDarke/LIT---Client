@@ -120,7 +120,7 @@ module.exports.listen = function (io, socket) {
         });
         getRooms();
         io.emit("roomInfo", rooms);
-        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
+        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom), userRoom);
         console.log(name + " created " + userRoom);
         console.log("users: ", users);
         console.log("rooms: ", rooms);
@@ -157,7 +157,7 @@ module.exports.listen = function (io, socket) {
           room: userRoom
         });
         //getRooms();
-        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom));
+        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom), userRoom);
         console.log(name + " joined " + userRoom);
         console.log("users: ", users);
         console.log("rooms: ", rooms);
@@ -191,7 +191,7 @@ module.exports.listen = function (io, socket) {
       socket.join(user.room);  //////////////////////// may need moving
       getRooms();
       io.emit("roomInfo", rooms);
-      io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));
+      io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room), user.room);
       console.log("users: ", users);
       retrieveUser(user);
 
@@ -219,7 +219,7 @@ module.exports.listen = function (io, socket) {
     getRooms();
     io.emit("roomInfo", rooms);
 
-    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room)); 
+    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room), room); 
     console.log(name + " left " + room);
     console.log("users: ", users);
     console.log("rooms: ", rooms);
@@ -242,7 +242,7 @@ module.exports.listen = function (io, socket) {
         let index = getUserIndex(user.name);
         let prevRoom = user.room;
         users[index].room = "";
-        io.sockets.in(prevRoom).emit("usersInRoom", getUsersInRoom(prevRoom));
+        io.sockets.in(prevRoom).emit("usersInRoom", getUsersInRoom(prevRoom), prevRoom);
         socket.leave(prevRoom);
       }
 
@@ -277,7 +277,7 @@ module.exports.listen = function (io, socket) {
           time: getTime(),
           room: user.room
         });
-        io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room));   // replace updates like this with named functions like "updateUsersinRoom"
+        io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room), user.room);   // replace updates like this with named functions like "updateUsersinRoom"
         socket.leave(user.room);
       }
     }

@@ -27,6 +27,8 @@ const socket = io(/*{
   timeout: 30000
 }*/); //x10
 
+const colors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
+const colors2 = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
   
 // io.eio.pingTimeout = 100000; // 2 minutes
 // io.eio.pingInterval = 30000; 
@@ -47,7 +49,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   const [roomsList, setRoomsList] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [view, setView] = useState("createRoom");
-  
+  const [userColors, setUserColors] = useState({})
   const [litMode, setLitMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
@@ -134,6 +136,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       return () => window.removeEventListener("resize", updateSize);
     }, []);
     return size;
+    //add scrollToBottom here?
   };
 
   const [, windowHeight] = useWindowSize();
@@ -284,6 +287,13 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  const getUserColor = () => {
+    let userColor = colors2.shift();
+    console.log('shift');
+    colors2.push(userColor);
+    console.log('usrColor', userColor);
+    return userColor;
+  }
 
   useEffect(() => {
     socket.on("token", (token) => {
@@ -297,15 +307,11 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       console.log('receive roominfo: ', rooms);
     });
 
-    socket.on("usersInRoom", (roomUsers) => {
-      setUsersInRoom(roomUsers.map(user => {
-        // user.color = usersInRoom[usersInRoom.indexOf(user)].color || "test";
-        user.color = user.color || "test";
-        return user;
-      }));
+    socket.on("usersInRoom", (roomUsers, room) => {
+      setUsersInRoom(roomUsers);
       console.log('receive usersinroom info: ', roomUsers);
     });
-
+    
     socket.on("typing", (typingUserName) => {
       setTyping(typingUserName + " is typing...");
       setTimeout(() => {
@@ -401,6 +407,32 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       scrollToBottom();
     }
   }, [messages, location]);
+
+  useEffect(() => {
+    console.log('update user color info: ', userColors);
+  }, [userColors]);
+
+
+  useEffect(() => {
+    usersInRoom.forEach(user => {
+      if (user.name !== name) {
+        //let index;
+        let color;
+        if (!userColors[user.name]) {
+          color = getUserColor();
+          setUserColors(prevState => ({
+            ...prevState,
+            [user.name]: color
+          }))
+        } 
+      }
+      
+      //user.color = user.color || getUserColor();
+      //return user;
+    })
+   
+  }, [usersInRoom]);
+  
   
   const handleClickRoom = (txt) => {
     setJoinRoomText(txt);
