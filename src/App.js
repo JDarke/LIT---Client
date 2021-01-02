@@ -39,7 +39,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
   const [warnNameText, setWarnNameText] = useState("");
-  const [warnJoinRoomText, setWarnRoomText] = useState("");
+  const [warnJoinRoomText, setWarnJoinRoomText] = useState("");
   const [warnCreateRoomText, setWarnCreateRoomText] = useState("");
   const [createRoomText, setCreateRoomText] = useState("");
   const [joinRoomText, setJoinRoomText] = useState("");
@@ -159,7 +159,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
         { name: name, userRoom: chosenRoom },
         (roomNotFound) => {
           if (roomNotFound) {
-            setWarnRoomText("Room does not exist");
+            setWarnJoinRoomText("Room does not exist");
           } else {
             setView("chat");
             history.push("/chat");
@@ -241,7 +241,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
 
       case "joinRoomText":
         setJoinRoomText(val);
-        if (warnJoinRoomText !== "") setWarnRoomText("");
+        if (warnJoinRoomText !== "") setWarnJoinRoomText("");
         break;
 
       case "nameText":
@@ -436,7 +436,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   
   const handleClickRoom = (txt) => {
     setJoinRoomText(txt);
-    if (warnJoinRoomText !== "") setWarnRoomText("");
+    //if (warnJoinRoomText !== "") setWarnJoinRoomText("");
   }
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
