@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap');
 
-$fontSizeSm: 13px;
+$fontSizeSm: 14px;
 $fontSizeLg: 16px;
 $messagePaddingSm: 5px 10px;
 $messagePaddingLg: 10px 15px;
@@ -285,7 +285,7 @@ ul {
     }
     .messageName {
       //font-weight: bold;
-      font-size: .7em;
+      font-size: .7em; //0.9
       position: absolute;
       background: rgba(255,255,255, 1);
       box-shadow: -1px 1px 3px rgba(0,0,0,.3);
@@ -294,8 +294,9 @@ ul {
       display: flex;
       align-items: center;
       vertical-align: bottom;
-      top: -8px;
+      top: -8px;  //-14px
       left: 0;
+   
       }
     .messageText {
       display: inline-block;
@@ -446,6 +447,7 @@ ul {
     border: 1px solid lightgrey;
     border-radius: 10px;
     margin: 5px;
+    cursor: pointer;
   }
 
 }
