@@ -27,13 +27,30 @@ const socket = io(/*{
   timeout: 30000
 }*/); //x10
 
-const colors = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#4b0082', '#ee82ee']
-const colors2 = ['blue', 'orange', 'green', 'yellow',  'indigo', 'red', 'violet']
-  
-// io.eio.pingTimeout = 100000; // 2 minutes
-// io.eio.pingInterval = 30000; 
+const colors = [
+  "#ff0000",
+  "#ffa500",
+  "#ffff00",
+  "#008000",
+  "#0000ff",
+  "#4b0082",
+  "#ee82ee",
+];
+const colors2 = [
+  "#3cb0fd", //DodgerBlue?
+  "orange",
+  "MediumSeaGreen",
+  "yellow",
+  "indigo",
+  "Tomato",
+  "violet",
+];
 
-const App = () => {   // store messages in localstorage through refresh, not after logout
+// io.eio.pingTimeout = 100000; // 2 minutes
+// io.eio.pingInterval = 30000;
+
+const App = () => {
+  // store messages in localstorage through refresh, not after logout
   //const [test, setTest] = useState('test');
   const history = useHistory();
   const [typeText, setTypeText] = useState("");
@@ -49,64 +66,24 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   const [roomsList, setRoomsList] = useState([]);
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [view, setView] = useState("createRoom");
-  const [userColors, setUserColors] = useState({})
+  const [userColors, setUserColors] = useState({});
   const [litMode, setLitMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const location = useLocation();
-  let userToken = () => localStorage.getItem("token");
-
+  const userToken = () => localStorage.getItem("token");
   const getLocalMessages = () => {
     let m = localStorage.getItem("messages");
     if (!m) {
       m = "[]";
     }
     return JSON.parse(m);
-  }
-  
+  };
   const setLocalMessages = (j) => {
     let m = JSON.stringify(j);
     localStorage.setItem("messages", m);
-  }
-
+  };
   const [messages, setMessages] = useState(getLocalMessages());
-  // add useEffect to fire on disconnect, i.e - when socket changes...?
-
-  useEffect( () =>
-      history.listen((newLocation, action) => {
-        let path = location.pathname;
-        let newPath = newLocation.pathname;
-
-        console.log(path);
-        console.log(newPath);
-        //let backTarget;
-
-        // if (action === "PUSH") {
-        //   if (newPath !== path) {
-        //     // if (path === '/rooms') {
-        //     //   backTarget = '/';
-        //     // } else if (path === '/chat') {
-        //     //   backTarget = '/rooms';
-        //     // } else if (path === '/') {
-        //     //   backTarget = '/';
-        //     // }
-
-        //     history.push(newPath);
-        //   }
-        // } else {
-        //   // Send user back if they try to navigate back
-        //   history.go(1);
-        // }
-      }),
-    [location, history]
-  );
-
-  useEffect(() => {
-    window.onbeforeunload = confirmExit;
-    function confirmExit() {
-      return "show warning";
-    }
-  }, []);
 
   const login = (chosenName) => {
     if (chosenName) {
@@ -119,7 +96,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
           setName(chosenName);
           history.push("/rooms");
           setView("createRoom");
-          console.log("Logged in. Name: " + chosenName + '. Room: ' + room);
+          console.log("Logged in. Name: " + chosenName + ". Room: " + room);
         }
       });
     }
@@ -143,10 +120,10 @@ const App = () => {   // store messages in localstorage through refresh, not aft
 
   const logout = () => {
     socket.emit("logout", {});
-    setName('');
+    setName("");
     setMessages([]);
-     setLocalMessages('');
-    setRoom('');
+    setLocalMessages("");
+    setRoom("");
     history.push("/");
     setView("home");
     console.log("Logged out.");
@@ -164,9 +141,9 @@ const App = () => {   // store messages in localstorage through refresh, not aft
             setView("chat");
             history.push("/chat");
             setRoom(chosenRoom); // was ''
-            setWarnJoinRoomText('');
-            setJoinRoomText('');
-            console.log("Join. Name: " + name + '. Room: ' + chosenRoom );
+            setWarnJoinRoomText("");
+            setJoinRoomText("");
+            console.log("Join. Name: " + name + ". Room: " + chosenRoom);
           }
         }
       );
@@ -185,9 +162,9 @@ const App = () => {   // store messages in localstorage through refresh, not aft
             setView("chat");
             history.push("/chat");
             setRoom(chosenRoom);
-            setWarnCreateRoomText('');
-            setCreateRoomText('');
-            console.log("Create room. Name: " + name + '. Room: ' + chosenRoom );
+            setWarnCreateRoomText("");
+            setCreateRoomText("");
+            console.log("Create room. Name: " + name + ". Room: " + chosenRoom);
           }
         }
       );
@@ -196,36 +173,32 @@ const App = () => {   // store messages in localstorage through refresh, not aft
 
   const leaveRoom = () => {
     socket.emit("leave", { name, room });
-    console.log("Leave room. Name: " + name + '. Room: ' + room );
+    console.log("Leave room. Name: " + name + ". Room: " + room);
     setView("joinRoom");
-     //if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
-        history.push("/rooms");
-     //}
+    //if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
+    history.push("/rooms");
+    //}
     //setMessages([]);
     setRoom("");
   };
 
- 
-  useEffect(() =>{
-   
-  }, [])
-
   const navBack = () => {
-    if (location.pathname === '/chat') {
+    if (location.pathname === "/chat") {
       leaveRoom();
       //history.push('/rooms');
-    } else if (location.pathname === '/rooms') {
+    } else if (location.pathname === "/rooms") {
       logout();
     }
   };
 
-  const toggleMenu = () => { //abstract these two into a toggle function for all boolean useStates
+  const toggleMenu = () => {
+    //abstract these two into a toggle function for all boolean useStates
     setShowMenu(!showMenu);
   };
 
   const toggleLitMode = () => {
-    console.log(!litMode, name, room)
-    socket.emit('lit-mode', !litMode, name, room );
+    console.log(!litMode, name, room);
+    socket.emit("lit-mode", !litMode, name, room);
     setLitMode(!litMode);
   };
 
@@ -262,8 +235,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
         return;
     }
   };
-  
-  
+
   const getTime = () => {
     let d = new Date();
     return d.toLocaleTimeString().slice(0, -3);
@@ -282,7 +254,10 @@ const App = () => {   // store messages in localstorage through refresh, not aft
     if (txt) {
       const message = new Message(txt);
       socket.emit("send_message", message);
-      console.log("Msgsent. Name: " + name + '. Room: ' + room + '. Msg: ', message);
+      console.log(
+        "Msgsent. Name: " + name + ". Room: " + room + ". Msg: ",
+        message
+      );
       setTypeText("");
     }
   };
@@ -293,29 +268,66 @@ const App = () => {   // store messages in localstorage through refresh, not aft
 
   const getUserColor = () => {
     let userColor = colors2.shift();
-    console.log('shift');
+    console.log("shift");
     colors2.push(userColor);
-    console.log('usrColor', userColor);
+    console.log("usrColor", userColor);
     return userColor;
-  }
+  };
+
+  useEffect(
+    () =>
+      history.listen((newLocation, action) => {
+        let path = location.pathname;
+        let newPath = newLocation.pathname;
+
+        console.log(path);
+        console.log(newPath);
+        //let backTarget;
+
+        // if (action === "PUSH") {
+        //   if (newPath !== path) {
+        //     // if (path === '/rooms') {
+        //     //   backTarget = '/';
+        //     // } else if (path === '/chat') {
+        //     //   backTarget = '/rooms';
+        //     // } else if (path === '/') {
+        //     //   backTarget = '/';
+        //     // }
+
+        //     history.push(newPath);
+        //   }
+        // } else {
+        //   // Send user back if they try to navigate back
+        //   history.go(1);
+        // }
+      }),
+    [location, history]
+  );
+
+  useEffect(() => {
+    window.onbeforeunload = confirmExit;
+    function confirmExit() {
+      return "show warning";
+    }
+  }, []);
 
   useEffect(() => {
     socket.on("token", (token) => {
       localStorage.setItem("token", token);
-      console.log('receive token: ', token);
-      console.log('userToken: ', userToken());
+      console.log("receive token: ", token);
+      console.log("userToken: ", userToken());
     });
 
     socket.on("roomInfo", (rooms) => {
       setRoomsList(rooms);
-      console.log('receive roominfo: ', rooms);
+      console.log("receive roominfo: ", rooms);
     });
 
     socket.on("usersInRoom", (roomUsers, room) => {
       setUsersInRoom(roomUsers);
-      console.log('receive usersinroom info: ', roomUsers);
+      console.log("receive usersinroom info: ", roomUsers);
     });
-    
+
     socket.on("typing", (typingUserName) => {
       setTyping(typingUserName + " is typing...");
       setTimeout(() => {
@@ -323,58 +335,54 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       }, 2000);
     });
 
-    socket.on("disconnect", function(reason) {
-      console.log('User disconnected because ' + reason);
+    socket.on("disconnect", function (reason) {
+      console.log("User disconnected because " + reason);
     });
-    
-    socket.on("reconnect", function() {
+
+    socket.on("reconnect", function () {
       // do not rejoin from here, since the socket.id token and/or rooms are still
       // not available.
-
 
       // add a reconnecting message and disable input durring reconnect!!!!!!
       console.log("Reconnecting");
     });
-    
-    socket.on("connect", function() {
+
+    socket.on("connect", function () {
       // thats the key line, now register to the room you want.
-      // info about the required rooms (if its not as simple as my 
+      // info about the required rooms (if its not as simple as my
       // example) could easily be reached via a DB connection. It worth it.
-      console.log("Connect. Name: " + name + '. Room: ' + room );
+      console.log("Connect. Name: " + name + ". Room: " + room);
       console.log(userToken());
-      socket.emit('retrieveUser', userToken(), function retrieveUser({name, room}) {
-        setName(name);
-        setRoom(room);
-        var b = getLocalMessages();
-        console.log('b: ', b);
-        setMessages(b);
-        console.log('retrieved user name and room: ' + name + ', ' + room);
-        //joinRoom(room);
-        if (name && room) {
-          if (location.pathname !== '/chat') {
-            history.push("/chat");
+      socket.emit(
+        "retrieveUser",
+        userToken(),
+        function retrieveUser({ name, room }) {
+          setName(name);
+          setRoom(room);
+          var b = getLocalMessages();
+          console.log("b: ", b);
+          setMessages(b);
+          console.log("retrieved user name and room: " + name + ", " + room);
+          //joinRoom(room);
+          if (name && room) {
+            if (location.pathname !== "/chat") {
+              history.push("/chat");
+            }
+          } else if (name) {
+            if (location.pathname !== "/rooms") {
+              history.push("/rooms");
+            } // put a useEffect in the rooms component to monitor and update as needed.
+          } else if (location.pathname !== "/") {
+            history.push("/");
+            // should this also call logout?
           }
-        } else if (name) {
-          if (location.pathname !== '/rooms') {
-            history.push("/rooms"); 
-          }                               // put a useEffect in the rooms component to monitor and update as needed.
-        } else if (location.pathname !== '/') {
-          history.push("/");
-          // should this also call logout?
         }
-      });
-      // if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
-      //   logout();
-      // }
-    
-      //joinRoom(room);
+      );
     });
 
-    socket.on('logout', function() {
+    socket.on("logout", function () {
       logout();
     });
-
-  
 
     return () => {
       socket.off("token");
@@ -387,13 +395,12 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       socket.off("logout");
     };
   }, []);
-  
 
   // useEffect(() => {
   //   if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
-    // console.log(location.pathname, name, room)
+  // console.log(location.pathname, name, room)
   //     logout();
-  //   } 
+  //   }
   // }, [name, room, location, logout]);
 
   useEffect(() => {
@@ -401,8 +408,6 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       setMessages([...messages, msg]);
       setLocalMessages([...messages, msg]);
     });
-    
-    //console.log(getLocalMessages());
     console.log(messages);
   }, [messages]);
 
@@ -413,35 +418,29 @@ const App = () => {   // store messages in localstorage through refresh, not aft
   }, [messages, location]);
 
   useEffect(() => {
-    console.log('update user color info: ', userColors);
+    console.log("update user color info: ", userColors);
   }, [userColors]);
 
-
   useEffect(() => {
-    usersInRoom.forEach(user => {
+    usersInRoom.forEach((user) => {
       if (user.name !== name) {
         //let index;
         let color;
         if (!userColors[user.name]) {
           color = getUserColor();
-          setUserColors(prevState => ({
+          setUserColors((prevState) => ({
             ...prevState,
-            [user.name]: color
-          }))
-        } 
+            [user.name]: color,
+          }));
+        }
       }
-      
-      //user.color = user.color || getUserColor();
-      //return user;
-    })
-   
+    });
   }, [usersInRoom]);
-  
-  
+
   const handleClickRoom = (txt) => {
     setJoinRoomText(txt);
     if (warnJoinRoomText !== "") setWarnJoinRoomText("");
-  }
+  };
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
   //   enter: { transform: "translateX(0)" },
@@ -456,7 +455,12 @@ const App = () => {   // store messages in localstorage through refresh, not aft
       }}
     >
       <div className="wrapper">
-        <Menu showMenu={showMenu} toggleMenu={toggleMenu} litMode={litMode} toggleLitMode={toggleLitMode} />
+        <Menu
+          showMenu={showMenu}
+          toggleMenu={toggleMenu}
+          litMode={litMode}
+          toggleLitMode={toggleLitMode}
+        />
         <Header
           location={location}
           room={room}
