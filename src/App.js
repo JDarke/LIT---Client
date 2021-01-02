@@ -492,6 +492,7 @@ const App = () => {   // store messages in localstorage through refresh, not aft
             <Route path="/chat">
               <ChatWindow
                 room={room}
+                userColors={userColors}
                 messages={messages}
                 messagesEndRef={messagesEndRef}
                 typeText={typeText}
