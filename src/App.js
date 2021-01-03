@@ -341,6 +341,7 @@ const App = () => {
     }
   }, []);
 
+
   useEffect(() => {
     socket.on("token", (token) => {
       localStorage.setItem("token", token);
@@ -388,8 +389,6 @@ const App = () => {
           console.log("b: ", b);
           setMessages(b);
           console.log("retrieved user name and room: " + name + ", " + room);
-          //joinRoom(room);
-         
         }
       );
     });
@@ -443,7 +442,7 @@ const App = () => {
         }
       }
     });
-  }, [usersInRoom]);
+  }, [usersInRoom, name, userColors]);
 
   const handleClickRoom = (txt) => {
     setJoinRoomText(txt);
