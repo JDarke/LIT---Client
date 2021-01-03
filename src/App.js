@@ -94,7 +94,7 @@ const App = () => {
           setWarnNameText("Username in use");
         } else {
           setName(chosenName);
-          history.push("/rooms");
+          //history.push("/rooms");
           setView("createRoom");
           console.log("Logged in. Name: " + chosenName + ". Room: " + room);
         }
@@ -107,12 +107,18 @@ const App = () => {
     useLayoutEffect(() => {
       function updateSize() {
         setSize([window.innerWidth, window.innerHeight]);
+        if (room) {
+          scrollToBottom()
+        }
       }
       window.addEventListener("resize", updateSize);
       updateSize();
+      
       return () => window.removeEventListener("resize", updateSize);
+      
     }, []);
     return size;
+    
     //add scrollToBottom here?
   };
 
@@ -121,10 +127,15 @@ const App = () => {
   const logout = () => {
     //put warning check here?
     socket.emit("logout", {});
-    setName("");
+    //setName('');
     setMessages([]);
     setLocalMessages("");
     setRoom("");
+    setView('createRoom');
+    setWarnJoinRoomText('');
+    setWarnCreateRoomText('');
+    setCreateRoomText('');
+    setJoinRoomText('');
     //history.push("/");
     setView("home");
     console.log("Logged out.");
@@ -139,8 +150,8 @@ const App = () => {
           if (roomNotFound) {
             setWarnJoinRoomText("Room does not exist");
           } else {
-            setView("chat");
-            history.push("/chat");
+            //setView("chat");
+            //history.push("/chat");
             setRoom(chosenRoom); // was ''
             setWarnJoinRoomText("");
             setJoinRoomText("");
@@ -160,8 +171,8 @@ const App = () => {
           if (roomNameIsTaken) {
             setWarnCreateRoomText("Room already exists");
           } else {
-            setView("chat");
-            history.push("/chat");
+            //setView("chat");
+            //history.push("/chat");
             setRoom(chosenRoom);
             setWarnCreateRoomText("");
             setCreateRoomText("");
@@ -175,9 +186,12 @@ const App = () => {
   const leaveRoom = () => {
     socket.emit("leave", { name, room });
     console.log("Leave room. Name: " + name + ". Room: " + room);
+    setWarnJoinRoomText('');
+    setWarnCreateRoomText('');
+    setCreateRoomText('');
+    setJoinRoomText('');
     setView("joinRoom");
     console.log('view should be joinRoom: ', view)
-   
   };
 
   const navBack = () => {
@@ -287,7 +301,25 @@ const App = () => {
         console.log(path);
         console.log(newPath);
         //let backTarget;
-
+        if (path === '/' && newPath === '/rooms') {
+          setView('createRoom');
+        }
+        
+        if (action === "POP") {
+          console.log('pop');
+          if (path === '/chat') {
+            //history.go(1);
+            setRoom('');
+          }
+          if (path === '/rooms') {
+            //history.go(1);
+            setName('');
+          }
+          if (path === '/') {
+            history.go(1);
+            //setName('');
+          }
+        }
         //  if (action === "PUSH") {
         //    if (newPath !== path) {
         //       // if (path === '/rooms') {
@@ -312,24 +344,42 @@ const App = () => {
     [location, history]
   );
 
-  useEffect(() => {
+  useEffect(() => {    //  routes user based on name and room being set or not.
     let path = location.pathname;
     if (name && room) {
-      if (location.pathname !== "/chat") {
+      if (path !== "/chat") {
         history.push("/chat");
       }
     } else if (name) {
-      if (location.pathname !== "/rooms") {
-        setView('joinRoom')
+      if (path !== "/rooms") {
+        
         history.push("/rooms");
       } // put a useEffect in the rooms component to monitor and update as needed.
-    } else if (location.pathname !== "/") {
-      history.push("/");
+    } else if (path !== "/") {
+        history.push("/");
       // should this also call logout?
     }
   }, [name, room]);
 
- 
+  useEffect(() => {  //  Handles state tidy up in case of ending up on a path without the correct relvant state (name, room).
+    console.log('location useEffect')
+    if (location.pathname === "/rooms") {
+      
+      if (view !== 'joinRoom' && view !== 'createRoom') {
+        setView('createRoom');
+      }
+      if (room) {
+        setRoom('');
+        leaveRoom();
+      }
+      
+    } else if (location.pathname === '/') {
+      if (room) setRoom('');
+      if (name) setName('');
+      
+      logout();
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     window.onbeforeunload = confirmExit;
@@ -483,7 +533,7 @@ const App = () => {
           location={location}
           room={room}
           name={name}
-          view={view}
+          path={location.pathname}
           typing={typing}
           usersInRoom={usersInRoom}
           navBack={navBack}
@@ -533,7 +583,6 @@ const App = () => {
         </div>
         {location.pathname === "/chat" && (
           <Footer
-            view={view}
             location={location}
             typeText={typeText}
             handleChange={handleChange}
