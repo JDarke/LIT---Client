@@ -14,7 +14,8 @@ import Home from "./components/home/Home.comp";
 import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
 import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
-import NotificationModal from "./components/modal/modal.comp";
+import NotificationModal from "./components/modals/modal.comp";
+import NotificationModalWithButton from "./components/modals/modalWithButton.comp";
 // import { useTransition, animated } from "react-spring";
 const ENDPOINT = process.env.PORT || "localhost:8080";
 //const socket = io(ENDPOINT); //x10
@@ -62,6 +63,7 @@ const App = () => {
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const [notification, setNotification] = useState('');
+  const [notification2, setNotification2] = useState('');
   const location = useLocation();
   const userToken = () => localStorage.getItem("token");
   const getLocalMessages = () => {
@@ -115,7 +117,6 @@ const App = () => {
   const logout = () => {
     //put warning check here?
     socket.emit("logout", {});
-    //setName('');
     setMessages([]);
     setLocalMessages("");
     setRoom('');
@@ -181,8 +182,10 @@ const App = () => {
       leaveRoom();
       setRoom('');
     } else if (location.pathname === "/rooms") {
-      logout();
-      setName('');
+      
+      warnBeforeLogout();
+      //logout();
+      //setName('');   // ***
     }
   };
 
@@ -273,8 +276,12 @@ const App = () => {
   };
 
   const handleCloseNotificationModal = () => {
-    setNotification(null);
+    setNotification2(null);
   };
+
+  const warnBeforeLogout = () => {
+    setNotification2('Confirm Logout?');
+  }
 
   useEffect(
     () =>
@@ -292,7 +299,9 @@ const App = () => {
             setRoom('');
           }
           if (path === '/rooms') {
-            setName('');
+            //warnBeforeLogout();
+            //history.go(1);
+            setName(''); // ***
           }
           if (path === '/') {
             history.go(1);
@@ -328,8 +337,9 @@ const App = () => {
         leaveRoom();
       }
     } else if (location.pathname === '/') {
+      
       if (room) setRoom('');
-      if (name) setName('');
+      if (name) setName(''); // ***
       logout();
     }
   }, [location.pathname]);
@@ -394,7 +404,7 @@ const App = () => {
     });
 
     socket.on("logout", function () {
-      setName('');
+      setName(''); 
       setRoom('');
     });
 
@@ -448,6 +458,11 @@ const App = () => {
     setJoinRoomText(txt);
     if (warnJoinRoomText !== "") setWarnJoinRoomText("");
   };
+
+  const logoutFromModal = () => {
+    setNotification2(null);
+    setName('');
+  };
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
   //   enter: { transform: "translateX(0)" },
@@ -471,6 +486,13 @@ const App = () => {
         {notification && (
           <NotificationModal
             notification={notification}
+            //handleCloseNotificationModal={handleCloseNotificationModal}
+          />
+        )}
+        {notification2 && (
+          <NotificationModalWithButton
+            notification={notification2}
+            logoutFromModal={logoutFromModal}
             handleCloseNotificationModal={handleCloseNotificationModal}
           />
         )}

@@ -1,5 +1,6 @@
 const {
   createToken,
+  deleteUser,
   addUser,
   getRooms,
   getUser,

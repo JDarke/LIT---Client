@@ -82,6 +82,7 @@ const getUsersInRoom = (room) => {
 
 module.exports = {
   createToken,
+  deleteUser,
   addUser,
   getRooms,
   getUser,

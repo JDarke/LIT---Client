@@ -106,14 +106,37 @@ $headerGrey: #f3f3f3;
   justify-content: center;
   align-items: center;
   padding: 1rem 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
   min-height: 150px;
   border-radius: 6px;
 }
 
 .notificationModal__content button {
+  border: none;
   margin-top: 2rem;
-  font-size: 1.2rem;
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 18px;
+  background: #3498db;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  cursor: pointer;
+  &:hover {
+      background: #3cb0fd;
+      text-decoration: none;
+  }
+  &:nth-of-type(2) {
+    margin-bottom: 20px;
+  }
+  &.cancel {
+    background: #808080;
+    &:hover {
+      background: #a0a0a0;
+      text-decoration: none;
+    }
+  }
 }
 
 /* tablet */
