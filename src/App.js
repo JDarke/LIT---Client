@@ -27,15 +27,7 @@ const socket = io(/*{
   timeout: 30000
 }*/); //x10
 
-const colors = [
-  "#ff0000",
-  "#ffa500",
-  "#ffff00",
-  "#008000",
-  "#0000ff",
-  "#4b0082",
-  "#ee82ee",
-];
+
 const colors2 = [
   "#3cb0fd", //DodgerBlue?
   "orange",
@@ -70,6 +62,7 @@ const App = () => {
   const [litMode, setLitMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
+  const [notification, setNotification] = useState('');
   const location = useLocation();
   const userToken = () => localStorage.getItem("token");
   const getLocalMessages = () => {
@@ -90,11 +83,9 @@ const App = () => {
       let token = localStorage.getItem("token");
       socket.emit("login", chosenName, token, (nameIsTaken) => {
         if (nameIsTaken) {
-          //console.log('Username in use');
           setWarnNameText("Username in use");
         } else {
           setName(chosenName);
-          //history.push("/rooms");
           setView("createRoom");
           console.log("Logged in. Name: " + chosenName + ". Room: " + room);
         }
@@ -136,8 +127,6 @@ const App = () => {
     setWarnCreateRoomText('');
     setCreateRoomText('');
     setJoinRoomText('');
-    //history.push("/");
-    setView("home");
     console.log("Logged out.");
   };
 
@@ -150,8 +139,6 @@ const App = () => {
           if (roomNotFound) {
             setWarnJoinRoomText("Room does not exist");
           } else {
-            //setView("chat");
-            //history.push("/chat");
             setRoom(chosenRoom); // was ''
             setWarnJoinRoomText("");
             setJoinRoomText("");
@@ -171,8 +158,6 @@ const App = () => {
           if (roomNameIsTaken) {
             setWarnCreateRoomText("Room already exists");
           } else {
-            //setView("chat");
-            //history.push("/chat");
             setRoom(chosenRoom);
             setWarnCreateRoomText("");
             setCreateRoomText("");
@@ -196,16 +181,11 @@ const App = () => {
 
   const navBack = () => {
     if (location.pathname === "/chat") {
-      //leaveRoom();
-      //history.push('/rooms');
-
       leaveRoom();
       setRoom('');
     } else if (location.pathname === "/rooms") {
-      //history.push('/');
       logout();
       setName('');
-      
     }
   };
 
@@ -292,21 +272,23 @@ const App = () => {
     return userColor;
   };
 
+  const handleCloseNotificationModal = () => {
+    setNotification(null);
+  };
+
   useEffect(
     () =>
       history.listen((newLocation, action) => {
         let path = location.pathname;
         let newPath = newLocation.pathname;
-
         console.log(path);
         console.log(newPath);
         //let backTarget;
         if (path === '/' && newPath === '/rooms') {
           setView('createRoom');
         }
-        
         if (action === "POP") {
-          console.log('pop');
+          //console.log('pop');
           if (path === '/chat') {
             //history.go(1);
             setRoom('');
@@ -320,26 +302,6 @@ const App = () => {
             //setName('');
           }
         }
-        //  if (action === "PUSH") {
-        //    if (newPath !== path) {
-        //       // if (path === '/rooms') {
-        //       //   backTarget = '/';
-        //       // } else if (path === '/chat') {
-        //       //   backTarget = '/rooms';
-        //       // } else if (path === '/') {
-        //       //   backTarget = '/';
-        //       // }
-        //       if (path === '/chat' && newPath === '/rooms') {
-        //         leaveRoom();
-        //       } else if (newPath === '/') {
-        //         logout();
-        //       }
-        //      history.push(newPath);
-        //    }
-        //  } else {
-        // //   // Send user back if they try to navigate back
-        // //   history.go(1);
-        // }
       }),
     [location, history]
   );
@@ -352,9 +314,8 @@ const App = () => {
       }
     } else if (name) {
       if (path !== "/rooms") {
-        
         history.push("/rooms");
-      } // put a useEffect in the rooms component to monitor and update as needed.
+      } /
     } else if (path !== "/") {
         history.push("/");
       // should this also call logout?
@@ -419,7 +380,7 @@ const App = () => {
     socket.on("reconnect", function () {
       // do not rejoin from here, since the socket.id token and/or rooms are still
       // not available.
-
+      setNotification('Reconneccting...');
       // add a reconnecting message and disable input durring reconnect  !!!!!!  -------------------------
       console.log("Reconnecting");
     });
@@ -430,6 +391,7 @@ const App = () => {
       // example) could easily be reached via a DB connection. It worth it.
       console.log("Connect. Name: " + name + ". Room: " + room);
       console.log(userToken());
+      setNotification('');
       socket.emit(
         "retrieveUser",
         userToken(),
@@ -449,7 +411,6 @@ const App = () => {
     socket.on("logout", function () {
       setName('');
       setRoom('');
-      //history.push('/');
     });
 
     return () => {
@@ -463,13 +424,6 @@ const App = () => {
       socket.off("logout");
     };
   }, []);
-
-  // useEffect(() => {
-  //   if ((location.pathname !== "/" && name === '') || (location.pathname === "/chat" && room === '')) {
-  // console.log(location.pathname, name, room)
-  //     logout();
-  //   }
-  // }, [name, room, location, logout]);
 
   useEffect(() => {
     socket.once("send_message", function (msg) {
@@ -529,6 +483,12 @@ const App = () => {
           litMode={litMode}
           toggleLitMode={toggleLitMode}
         />
+        {notification && (
+          <NotificationModal
+            notification={notification}
+            handleCloseNotificationModal={handleCloseNotificationModal}
+          />
+        )}
         <Header
           location={location}
           room={room}
