@@ -83,7 +83,7 @@ const App = () => {
     let m = JSON.stringify(j);
     localStorage.setItem("messages", m);
   };
-  const [messages, setMessages] = useState(getLocalMessages());
+  const [messages, setMessages] = useState(getLocalMessages() || []);
 
   const login = (chosenName) => {
     if (chosenName) {
@@ -119,12 +119,13 @@ const App = () => {
   const [, windowHeight] = useWindowSize();
 
   const logout = () => {
+    //put warning check here?
     socket.emit("logout", {});
     setName("");
     setMessages([]);
     setLocalMessages("");
     setRoom("");
-    history.push("/");
+    //history.push("/");
     setView("home");
     console.log("Logged out.");
   };
@@ -175,19 +176,22 @@ const App = () => {
     socket.emit("leave", { name, room });
     console.log("Leave room. Name: " + name + ". Room: " + room);
     setView("joinRoom");
-    //if (location.pathname !== '/rooms') { // need to separate the history push from the leave func so it can be called on history listen. Swap the leave() call in navBack for push to history, then in listener conditionally call leave()
-    history.push("/rooms");
-    //}
-    //setMessages([]);
-    setRoom("");
+    console.log('view should be joinRoom: ', view)
+   
   };
 
   const navBack = () => {
     if (location.pathname === "/chat") {
-      leaveRoom();
+      //leaveRoom();
       //history.push('/rooms');
+
+      leaveRoom();
+      setRoom('');
     } else if (location.pathname === "/rooms") {
+      //history.push('/');
       logout();
+      setName('');
+      
     }
   };
 
@@ -284,25 +288,48 @@ const App = () => {
         console.log(newPath);
         //let backTarget;
 
-        // if (action === "PUSH") {
-        //   if (newPath !== path) {
-        //     // if (path === '/rooms') {
-        //     //   backTarget = '/';
-        //     // } else if (path === '/chat') {
-        //     //   backTarget = '/rooms';
-        //     // } else if (path === '/') {
-        //     //   backTarget = '/';
-        //     // }
-
-        //     history.push(newPath);
-        //   }
-        // } else {
-        //   // Send user back if they try to navigate back
-        //   history.go(1);
+        //  if (action === "PUSH") {
+        //    if (newPath !== path) {
+        //       // if (path === '/rooms') {
+        //       //   backTarget = '/';
+        //       // } else if (path === '/chat') {
+        //       //   backTarget = '/rooms';
+        //       // } else if (path === '/') {
+        //       //   backTarget = '/';
+        //       // }
+        //       if (path === '/chat' && newPath === '/rooms') {
+        //         leaveRoom();
+        //       } else if (newPath === '/') {
+        //         logout();
+        //       }
+        //      history.push(newPath);
+        //    }
+        //  } else {
+        // //   // Send user back if they try to navigate back
+        // //   history.go(1);
         // }
       }),
     [location, history]
   );
+
+  useEffect(() => {
+    let path = location.pathname;
+    if (name && room) {
+      if (location.pathname !== "/chat") {
+        history.push("/chat");
+      }
+    } else if (name) {
+      if (location.pathname !== "/rooms") {
+        setView('joinRoom')
+        history.push("/rooms");
+      } // put a useEffect in the rooms component to monitor and update as needed.
+    } else if (location.pathname !== "/") {
+      history.push("/");
+      // should this also call logout?
+    }
+  }, [name, room]);
+
+ 
 
   useEffect(() => {
     window.onbeforeunload = confirmExit;
@@ -343,7 +370,7 @@ const App = () => {
       // do not rejoin from here, since the socket.id token and/or rooms are still
       // not available.
 
-      // add a reconnecting message and disable input durring reconnect!!!!!!
+      // add a reconnecting message and disable input durring reconnect  !!!!!!  -------------------------
       console.log("Reconnecting");
     });
 
@@ -364,24 +391,15 @@ const App = () => {
           setMessages(b);
           console.log("retrieved user name and room: " + name + ", " + room);
           //joinRoom(room);
-          if (name && room) {
-            if (location.pathname !== "/chat") {
-              history.push("/chat");
-            }
-          } else if (name) {
-            if (location.pathname !== "/rooms") {
-              history.push("/rooms");
-            } // put a useEffect in the rooms component to monitor and update as needed.
-          } else if (location.pathname !== "/") {
-            history.push("/");
-            // should this also call logout?
-          }
+         
         }
       );
     });
 
     socket.on("logout", function () {
-      logout();
+      setName('');
+      setRoom('');
+      //history.push('/');
     });
 
     return () => {
