@@ -99,9 +99,9 @@ const App = () => {
     useLayoutEffect(() => {
       function updateSize() {
         setSize([window.innerWidth, window.innerHeight]);
-        if (room) {
+        //if (room) {
           scrollToBottom()
-        }
+        //}
       }
       window.addEventListener("resize", updateSize);
       updateSize();
@@ -192,7 +192,8 @@ const App = () => {
 
   const toggleMenu = () => {
     //abstract these two into a toggle function for all boolean useStates
-    setShowMenu(!showMenu);
+    //setShowMenu(!showMenu);
+    setNotification('Reconnecting...');
   };
 
   const toggleLitMode = () => {
