@@ -11,5 +11,5 @@ const NotificationModal = ({ notification, handleCloseNotificationModal }) => {
     </div>
   );
 };
-
+ 
 export default NotificationModal;
