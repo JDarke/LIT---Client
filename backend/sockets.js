@@ -217,7 +217,7 @@ module.exports.listen = function (io, socket) {
       let index = getUserIndex(name);
       users[index].room = "";
     }
-    socket.leave(room);
+    socket.leave(room);     // might be worth diverging socket rooms and client side rooms.  If the client stays in all rooms during their session, then they can still recieve messages to come back to in that room.  Potential downsides.  Is it worth it for a non-db chat? Is it needed?
     getRooms();
     io.emit("roomInfo", rooms);
 

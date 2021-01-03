@@ -352,6 +352,19 @@ const App = () => {
   }, []);
 
 
+  const clearDeadMessages = () => {
+    const clearedMessages = messages.filter((msg) => {
+      console.log('filter - room: ' + msg.room + ', i: ' + roomsList.indexOf(msg.room));
+      return (roomsList.indexOf(msg.room) > -1);
+    });
+    setMessages(clearedMessages);
+  };
+
+  useEffect(() => {
+    clearDeadMessages();
+    console.log(messages);
+  }, [roomsList]);
+
   useEffect(() => {
     socket.on("token", (token) => {
       localStorage.setItem("token", token);
@@ -426,7 +439,7 @@ const App = () => {
       setLocalMessages([...messages, msg]);
     });
     console.log(messages);
-  }, [messages]);
+  }, [messages]);  // do messages get received while in the lobby?
 
   useEffect(() => {
     if (location.pathname === "/chat") {
