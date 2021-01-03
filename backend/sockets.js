@@ -15,6 +15,10 @@ const translate = require("@k3rn31p4nic/google-translate-api");
 let users = getUsers();
 let rooms = getRooms();
 
+const updateUsersInRoom = (io, room) => {
+  io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room), room);
+}
+
 module.exports.listen = function (io, socket) {
 
   socket.on("send_message", (msg) => {
@@ -71,18 +75,15 @@ module.exports.listen = function (io, socket) {
   });
 
 
-
-
+  
   socket.on("login", (name, token, nameIsTaken) => {
     let existingUser = getUser(name);
     console.log('nameIsTaken: ', nameIsTaken)
     if (existingUser) {
-      //console.log(existingUser.token, token);
       console.log('nameIsTaken: ', nameIsTaken);
       if (existingUser.token != token) {
         nameIsTaken(true);
       } else {
-        // handle re-assign user to new socket // what about same token, diff name?
         existingUser.id = socket.client.id;
         existingUser.isOnline = true;
         nameIsTaken(false);
@@ -120,7 +121,7 @@ module.exports.listen = function (io, socket) {
         });
         getRooms();
         io.emit("roomInfo", rooms);
-        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom), userRoom);
+        updateUsersInRoom(io, userRoom);
         console.log(name + " created " + userRoom);
         console.log("users: ", users);
         console.log("rooms: ", rooms);
@@ -157,7 +158,7 @@ module.exports.listen = function (io, socket) {
           room: userRoom
         });
         //getRooms();
-        io.sockets.in(userRoom).emit("usersInRoom", getUsersInRoom(userRoom), userRoom);
+        updateUsersInRoom(io, userRoom);
         console.log(name + " joined " + userRoom);
         console.log("users: ", users);
         console.log("rooms: ", rooms);
@@ -191,7 +192,7 @@ module.exports.listen = function (io, socket) {
       socket.join(user.room);  //////////////////////// may need moving
       getRooms();
       io.emit("roomInfo", rooms);
-      io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room), user.room);
+      updateUsersInRoom(io, user.room);
       console.log("users: ", users);
       retrieveUser(user);
 
@@ -219,7 +220,7 @@ module.exports.listen = function (io, socket) {
     getRooms();
     io.emit("roomInfo", rooms);
 
-    io.sockets.in(room).emit("usersInRoom", getUsersInRoom(room), room); 
+    updateUsersInRoom(io, room);
     console.log(name + " left " + room);
     console.log("users: ", users);
     console.log("rooms: ", rooms);
@@ -242,7 +243,7 @@ module.exports.listen = function (io, socket) {
         let index = getUserIndex(user.name);
         let prevRoom = user.room;
         users[index].room = "";
-        io.sockets.in(prevRoom).emit("usersInRoom", getUsersInRoom(prevRoom), prevRoom);
+        updateUsersInRoom(io, prevRoom);
         socket.leave(prevRoom);
       }
 
@@ -277,7 +278,7 @@ module.exports.listen = function (io, socket) {
           time: getTime(),
           room: user.room
         });
-        io.sockets.in(user.room).emit("usersInRoom", getUsersInRoom(user.room), user.room);   // replace updates like this with named functions like "updateUsersinRoom"
+        updateUsersInRoom(io, user.room);   // replace updates like this with named functions like "updateUsersinRoom"
         socket.leave(user.room);
       }
     }

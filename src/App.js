@@ -43,8 +43,6 @@ const colors2 = [
 // io.eio.pingInterval = 30000;
 
 const App = () => {
-  // store messages in localstorage through refresh, not after logout
-  //const [test, setTest] = useState('test');
   const history = useHistory();
   const [typeText, setTypeText] = useState("");
   const [nameText, setNameText] = useState("");
@@ -110,8 +108,6 @@ const App = () => {
       
     }, []);
     return size;
-    
-    //add scrollToBottom here?
   };
 
   const [, windowHeight] = useWindowSize();
@@ -122,7 +118,7 @@ const App = () => {
     //setName('');
     setMessages([]);
     setLocalMessages("");
-    setRoom("");
+    setRoom('');
     setView('createRoom');
     setWarnJoinRoomText('');
     setWarnCreateRoomText('');
@@ -193,7 +189,6 @@ const App = () => {
   const toggleMenu = () => {
     //abstract these two into a toggle function for all boolean useStates
     setShowMenu(!showMenu);
-    //setNotification('Reconnecting...');
   };
 
   const toggleLitMode = () => {
@@ -288,23 +283,19 @@ const App = () => {
         let newPath = newLocation.pathname;
         console.log(path);
         console.log(newPath);
-        //let backTarget;
+
         if (path === '/' && newPath === '/rooms') {
           setView('createRoom');
         }
         if (action === "POP") {
-          //console.log('pop');
           if (path === '/chat') {
-            //history.go(1);
             setRoom('');
           }
           if (path === '/rooms') {
-            //history.go(1);
             setName('');
           }
           if (path === '/') {
             history.go(1);
-            //setName('');
           }
         }
       }),
@@ -323,14 +314,12 @@ const App = () => {
       } 
     } else if (path !== "/") {
         history.push("/");
-      // should this also call logout?
     }
   }, [name, room]);
 
   useEffect(() => {  //  Handles state tidy up in case of ending up on a path without the correct relvant state (name, room).
     console.log('location useEffect')
     if (location.pathname === "/rooms") {
-      
       if (view !== 'joinRoom' && view !== 'createRoom') {
         setView('createRoom');
       }
@@ -338,11 +327,9 @@ const App = () => {
         setRoom('');
         leaveRoom();
       }
-      
     } else if (location.pathname === '/') {
       if (room) setRoom('');
       if (name) setName('');
-      
       logout();
     }
   }, [location.pathname]);
@@ -383,17 +370,11 @@ const App = () => {
     });
 
     socket.on("reconnect", function () {
-      // do not rejoin from here, since the socket.id token and/or rooms are still
-      // not available.
-      setNotification('Reconneccting...');
-      // add a reconnecting message and disable input durring reconnect  !!!!!!  -------------------------
+      setNotification('Reconnecting...');
       console.log("Reconnecting");
     });
 
     socket.on("connect", function () {
-      // thats the key line, now register to the room you want.
-      // info about the required rooms (if its not as simple as my
-      // example) could easily be reached via a DB connection. It worth it.
       console.log("Connect. Name: " + name + ". Room: " + room);
       console.log(userToken());
       setNotification('');
