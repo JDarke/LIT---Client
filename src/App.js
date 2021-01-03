@@ -14,6 +14,7 @@ import Home from "./components/home/Home.comp";
 import SelectRoom from "./components/SelectRoom/SelectRoom.comp";
 import Footer from "./components/footer/Footer.comp";
 import Menu from "./components/menu/Menu.comp";
+import NotificationModal from "./components/modal/Modal.comp";
 // import { useTransition, animated } from "react-spring";
 const ENDPOINT = process.env.PORT || "localhost:8080";
 //const socket = io(ENDPOINT); //x10
@@ -315,7 +316,7 @@ const App = () => {
     } else if (name) {
       if (path !== "/rooms") {
         history.push("/rooms");
-      } /
+      } 
     } else if (path !== "/") {
         history.push("/");
       // should this also call logout?
