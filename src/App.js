@@ -353,11 +353,14 @@ const App = () => {
 
 
   const clearDeadMessages = () => {
-    const clearedMessages = messages.filter((msg) => {
-      console.log('filter - room: ' + msg.room + ', i: ' + roomsList.indexOf(msg.room));
-      return (roomsList.indexOf(msg.room) > -1);
-    });
-    setMessages(clearedMessages);
+    if (messages) {
+      const clearedMessages = messages.filter((msg) => {
+        console.log('filter - room: ' + msg.room + ', i: ' + roomsList.indexOf(msg.room));
+        return (roomsList.indexOf(msg.room) > -1);
+      });
+      setMessages(clearedMessages);
+    }
+    
   };
 
   useEffect(() => {
