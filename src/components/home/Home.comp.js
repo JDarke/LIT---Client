@@ -1,9 +1,11 @@
 import React from "react";
+import litlogowhite from '../../images/litlogowhite.png'
 
 const Home = ({ nameText, login, handleChange, warnNameText }) => {
   return (
     <div className="pageWrapper" style={{ marginTop: "40px" }}>
       <br />
+      <div className="logo-wrap"><img className="logo" src={litlogowhite} /></div>
       <br />
       <br />
       <p>Choose a user name</p>

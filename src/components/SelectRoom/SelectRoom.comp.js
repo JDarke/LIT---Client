@@ -1,4 +1,5 @@
 import React from "react";
+import litlogowhite from '../../images/litlogowhite.png'
 
 const SelectRoom = ({
   createRoomText,
@@ -23,6 +24,7 @@ const SelectRoom = ({
             {view === "createRoom" && (
                 <div className="selectWrapper">
                     <br />
+                    {/* <div className="logo-wrap"><img className="logo" src={litlogowhite} /></div> */}
                     <br />
                     <p>Enter a name for your room, and choose whether to make it public</p>
                     <div className="warnText">{warnCreateRoomText}</div>
@@ -50,6 +52,7 @@ const SelectRoom = ({
                 <div className="selectWrapper">
                     <br />
                     <br />
+                   {/* <div className="logo-wrap"><img className="logo" src={litlogowhite} /></div> */}
                     <p>Select a public room or enter the name of a private room to join</p>
                     <div className="warnText">{warnJoinRoomText}</div>
                     <form

@@ -133,7 +133,6 @@ module.exports.listen = function (io, socket) {
 
 
 
-
   socket.on("join", ({ name, userRoom }, roomNotFound) => {
     let existingRoom = rooms.find((room) => room === userRoom);
     //console.log("rooms: ",  rooms);
@@ -279,7 +278,7 @@ module.exports.listen = function (io, socket) {
           time: getTime(),
           room: user.room
         });
-        updateUsersInRoom(io, user.room);   // replace updates like this with named functions like "updateUsersinRoom"
+        updateUsersInRoom(io, user.room);   
         socket.leave(user.room);
       }
     }
