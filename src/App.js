@@ -29,7 +29,6 @@ const socket = io(/*{
   timeout: 30000
 }*/); //x10
 
-
 const colors2 = [
   "#3cb0fd", //DodgerBlue?
   "orange",
@@ -62,8 +61,8 @@ const App = () => {
   const [litMode, setLitMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const messagesEndRef = useRef(null);
-  const [notification, setNotification] = useState('');
-  const [notification2, setNotification2] = useState('');
+  const [notification, setNotification] = useState("");
+  const [notification2, setNotification2] = useState("");
   const location = useLocation();
   const userToken = () => localStorage.getItem("token");
   const getLocalMessages = () => {
@@ -100,14 +99,13 @@ const App = () => {
       function updateSize() {
         setSize([window.innerWidth, window.innerHeight]);
         if (room) {
-          scrollToBottom()
+          scrollToBottom();
         }
       }
       window.addEventListener("resize", updateSize);
       updateSize();
-      
+
       return () => window.removeEventListener("resize", updateSize);
-      
     }, []);
     return size;
   };
@@ -119,12 +117,12 @@ const App = () => {
     socket.emit("logout", {});
     setMessages([]);
     setLocalMessages("");
-    setRoom('');
-    setView('createRoom');
-    setWarnJoinRoomText('');
-    setWarnCreateRoomText('');
-    setCreateRoomText('');
-    setJoinRoomText('');
+    setRoom("");
+    setView("createRoom");
+    setWarnJoinRoomText("");
+    setWarnCreateRoomText("");
+    setCreateRoomText("");
+    setJoinRoomText("");
     console.log("Logged out.");
   };
 
@@ -169,20 +167,19 @@ const App = () => {
   const leaveRoom = () => {
     socket.emit("leave", { name, room });
     console.log("Leave room. Name: " + name + ". Room: " + room);
-    setWarnJoinRoomText('');
-    setWarnCreateRoomText('');
-    setCreateRoomText('');
-    setJoinRoomText('');
+    setWarnJoinRoomText("");
+    setWarnCreateRoomText("");
+    setCreateRoomText("");
+    setJoinRoomText("");
     setView("joinRoom");
-    console.log('view should be joinRoom: ', view)
+    console.log("view should be joinRoom: ", view);
   };
 
   const navBack = () => {
     if (location.pathname === "/chat") {
       leaveRoom();
-      setRoom('');
+      setRoom("");
     } else if (location.pathname === "/rooms") {
-      
       warnBeforeLogout();
       //logout();
       //setName('');   // ***
@@ -264,7 +261,7 @@ const App = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     setTimeout(() => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }, 300)
+    }, 300);
   };
 
   const getUserColor = () => {
@@ -280,8 +277,30 @@ const App = () => {
   };
 
   const warnBeforeLogout = () => {
-    setNotification2('Confirm Logout?');
-  }
+    setNotification2("Confirm Logout?");
+  };
+
+  const clearDeadMessages = () => {
+    if (messages) {
+      const clearedMessages = messages.filter((msg) => {
+        console.log(
+          "filter - room: " + msg.room + ", i: " + roomsList.indexOf(msg.room)
+        );
+        return roomsList.indexOf(msg.room) > -1;
+      });
+      setMessages(clearedMessages);
+    }
+  };
+
+  const handleClickRoom = (txt) => {
+    setJoinRoomText(txt);
+    if (warnJoinRoomText !== "") setWarnJoinRoomText("");
+  };
+
+  const logoutFromModal = () => {
+    setNotification2(null);
+    setName("");
+  };
 
   useEffect(
     () =>
@@ -291,19 +310,19 @@ const App = () => {
         console.log(path);
         console.log(newPath);
 
-        if (path === '/' && newPath === '/rooms') {
-          setView('createRoom');
+        if (path === "/" && newPath === "/rooms") {
+          setView("createRoom");
         }
         if (action === "POP") {
-          if (path === '/chat') {
-            setRoom('');
+          if (path === "/chat") {
+            setRoom("");
           }
-          if (path === '/rooms') {
+          if (path === "/rooms") {
             //warnBeforeLogout();
             //history.go(1);
-            setName(''); // ***
+            setName(""); // ***
           }
-          if (path === '/') {
+          if (path === "/") {
             history.go(1);
           }
         }
@@ -311,7 +330,8 @@ const App = () => {
     [location, history]
   );
 
-  useEffect(() => {    //  routes user based on name and room being set or not.
+  useEffect(() => {
+    //  routes user based on name and room being set or not.
     let path = location.pathname;
     if (name && room) {
       if (path !== "/chat") {
@@ -320,26 +340,26 @@ const App = () => {
     } else if (name) {
       if (path !== "/rooms") {
         history.push("/rooms");
-      } 
+      }
     } else if (path !== "/") {
-        history.push("/");
+      history.push("/");
     }
   }, [name, room]);
 
-  useEffect(() => {  //  Handles state tidy up in case of ending up on a path without the correct relvant state (name, room).
-    console.log('location useEffect')
+  useEffect(() => {
+    //  Handles state tidy up in case of ending up on a path without the correct relvant state (name, room).
+    console.log("location useEffect");
     if (location.pathname === "/rooms") {
-      if (view !== 'joinRoom' && view !== 'createRoom') {
-        setView('createRoom');
+      if (view !== "joinRoom" && view !== "createRoom") {
+        setView("createRoom");
       }
       if (room) {
-        setRoom('');
+        setRoom("");
         leaveRoom();
       }
-    } else if (location.pathname === '/') {
-      
-      if (room) setRoom('');
-      if (name) setName(''); // ***
+    } else if (location.pathname === "/") {
+      if (room) setRoom("");
+      if (name) setName(""); // ***
       logout();
     }
   }, [location.pathname]);
@@ -351,21 +371,9 @@ const App = () => {
     }
   }, []);
 
-
-  const clearDeadMessages = () => {
-    if (messages) {
-      const clearedMessages = messages.filter((msg) => {
-        console.log('filter - room: ' + msg.room + ', i: ' + roomsList.indexOf(msg.room));
-        return (roomsList.indexOf(msg.room) > -1);
-      });
-      setMessages(clearedMessages);
-    }
-    
-  };
-
   useEffect(() => {
     clearDeadMessages();
-    console.log(messages);
+    //console.log(messages);
   }, [roomsList]);
 
   useEffect(() => {
@@ -397,14 +405,14 @@ const App = () => {
     });
 
     socket.on("reconnect", function () {
-      setNotification('Reconnecting...');
+      setNotification("Reconnecting...");
       console.log("Reconnecting");
     });
 
     socket.on("connect", function () {
       console.log("Connect. Name: " + name + ". Room: " + room);
       console.log(userToken());
-      setNotification('');
+      setNotification("");
       socket.emit(
         "retrieveUser",
         userToken(),
@@ -420,8 +428,8 @@ const App = () => {
     });
 
     socket.on("logout", function () {
-      setName(''); 
-      setRoom('');
+      setName("");
+      setRoom("");
     });
 
     return () => {
@@ -442,7 +450,7 @@ const App = () => {
       setLocalMessages([...messages, msg]);
     });
     console.log(messages);
-  }, [messages]);  // do messages get received while in the lobby?
+  }, [messages]);
 
   useEffect(() => {
     if (location.pathname === "/chat") {
@@ -470,15 +478,6 @@ const App = () => {
     });
   }, [usersInRoom, name, userColors]);
 
-  const handleClickRoom = (txt) => {
-    setJoinRoomText(txt);
-    if (warnJoinRoomText !== "") setWarnJoinRoomText("");
-  };
-
-  const logoutFromModal = () => {
-    setNotification2(null);
-    setName('');
-  };
   // const transitions = useTransition(view, (p) => p, {
   //   from: { transform: "translateX(-100%)" },
   //   enter: { transform: "translateX(0)" },

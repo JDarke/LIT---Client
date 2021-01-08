@@ -1,4 +1,5 @@
 import React from 'react';
+import './chatWindow.scss';
 
 const ChatWindow = ({ messages, messagesEndRef, name, room, userColors}) => {
     

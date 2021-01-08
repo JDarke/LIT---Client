@@ -1,0 +1,50 @@
+
+@import '../../variables.scss' ;
+
+.header {
+    height: 72px;
+    padding: 0 1em;
+    display: flex;
+    align-items: center;
+    //width: 100%;
+    position: relative;
+    background: $headerGrey;
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-height: 72px;
+    }
+    .logo {
+      height: 60px;
+      //width: 100%;
+    }
+    .headerInfo {
+      width: 100%;
+      padding-left: 1em;
+      text-align: left;
+    }
+    .usersInRoom {
+      font-size: .9em;
+    }
+    h2, h3 {
+      margin: 0;
+      width: 100%;
+      font-weight: 900;
+    }
+    h2 {
+      //font-weight: 900;
+    }
+    .backLink, 
+    .menuLink {
+      padding: .5em;
+      cursor: pointer;
+      width: 20px;
+      height:20px;
+      font-size: 16px;
+      &.noPointer {
+        cursor: unset;
+      }
+    }
+  }

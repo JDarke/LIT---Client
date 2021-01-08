@@ -1,4 +1,5 @@
 import React from "react";
+import './home.scss';
 import litlogowhite from '../../images/litlogowhite.png'
 
 const Home = ({ nameText, login, handleChange, warnNameText }) => {

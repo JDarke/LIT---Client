@@ -1,9 +1,63 @@
+@import "../../variables.scss";
+
 .userPic {
-    width: auto;
-    background: grey;
-    border-radius: 50%;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    -ms-border-radius: 50%;
-    -o-border-radius: 50%;
+  width: auto;
+  background: grey;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+.selectWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  padding: 0 1em;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: scroll;
+  p {
+    width: 72%;
+  }
+  > * {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  h4 {
+    font-weight: 700;
+  }
+}
+
+.selectRoomTabs {
+  width: 100%;
+  display: flex;
+  background: $headerGrey;
+  user-select: none;
+  .roomTab {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    &.active {
+      cursor: unset;
+      font-weight: 700;
+      background: white;
+    }
+  }
+}
+
+.publicRoomsList {
+  li {
+    padding: 3px 10px;
+  }
+  .publicRoom {
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+  }
 }

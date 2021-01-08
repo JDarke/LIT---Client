@@ -1,4 +1,5 @@
 import React from "react";
+import './selectRoom.scss';
 import litlogowhite from '../../images/litlogowhite.png'
 
 const SelectRoom = ({

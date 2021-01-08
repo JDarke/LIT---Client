@@ -1,0 +1,102 @@
+
+@import '../../variables.scss';
+
+#messages {
+    margin-top :0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
+    //max-height: 587px;
+    padding: 5px;
+    background: white;
+    width: 98%;
+    .message {
+      max-width: 75%;
+      position: relative;
+      list-style: none;
+      text-align: left;
+      //font-weight: bold;
+      background: rgb(237, 237, 237);
+      border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+      -webkit-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+      -moz-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+      -ms-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+      -o-border-radius:0 $msgBorderRadiusSm  $msgBorderRadiusSm  $msgBorderRadiusSm;
+      padding: $messagePaddingSm;
+      margin-top: 5px;
+      align-self: flex-start;
+      //font-family:'Roboto', sans-serif;
+      @media screen and (min-width: 768px) {
+        padding: $messagePaddingLg;
+        border-radius: $msgBorderRadiusLg;
+        -webkit-border-radius: $msgBorderRadiusLg;
+        -moz-border-radius: $msgBorderRadiusLg;
+        -ms-border-radius: $msgBorderRadiusLg;
+        -o-border-radius: $msgBorderRadiusLg;
+      }
+      .messageName {
+        //font-weight: bold;
+        font-weight: 500;
+        font-size: .8em; //0.9
+        position: absolute;
+        background: rgba(255,255,255, 1);
+        box-shadow: -1px 1px 3px rgba(0,0,0,.3);
+        padding: 0 4px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        vertical-align: bottom;
+        top: -11px;  //-14px
+        left: 0;
+  
+        }
+      .messageText {
+        display: inline-block;
+      }
+      .timeStamp {
+        font-size: .7em;
+        opacity: .5;
+        font-weight: normal;
+        float: right;
+        position: relative;
+        top: 5px;
+        left: 5px;
+      }
+      &.message-user {
+        align-self: flex-end;
+        background: rgb(202, 239, 255);
+        border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+        -webkit-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+        -moz-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+        -ms-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+        -o-border-radius:  $msgBorderRadiusSm  0 $msgBorderRadiusSm   $msgBorderRadiusSm;
+        .timeStamp{
+
+        }
+      }
+      &.message-admin {
+        font-size: .85em;
+        padding: 10px;
+        margin-right: 0;
+        text-align: center;
+        color: #aaa;
+        background: none;
+        font-weight: normal;
+        align-self: center;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        -ms-border-radius: 0;
+        -o-border-radius: 0;
+        .timeStamp {
+          font-size: .85em;
+          align-self: center;
+          text-align: center;
+          right: unset;
+          width: 100%;
+        }
+      }
+    }
+  }

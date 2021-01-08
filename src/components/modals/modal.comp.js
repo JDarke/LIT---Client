@@ -1,5 +1,5 @@
 import React from "react";
-
+import './notificationModal.scss';
 
 const NotificationModal = ({ notification, handleCloseNotificationModal }) => {
   return (
