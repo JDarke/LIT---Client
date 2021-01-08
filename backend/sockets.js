@@ -93,7 +93,7 @@ module.exports.listen = function (io, socket) {
       addUser(name, socket.client.id, "");
       let user = getUser(name);
       getRooms();
-      io.to(socket.client.id).emit("roomInfo", rooms); //  isnt this it??
+      io.to(socket.client.id).emit("roomInfo", rooms); 
       io.to(socket.client.id).emit("token", user.token);
       nameIsTaken(false);  // app crashed here, with maneIsTaken is not a func.
       console.log(name + " logged in");
